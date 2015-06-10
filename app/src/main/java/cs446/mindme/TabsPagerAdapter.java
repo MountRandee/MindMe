@@ -3,7 +3,6 @@ package cs446.mindme;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     public TabsPagerAdapter(FragmentManager fm) {
@@ -15,13 +14,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         switch (index) {
             case 0:
                 // Received reminders
-                return new ViewReceived();
+                return new cs446.mindme.Received.ViewReceived();
             case 1:
                 // Sent reminders
-                return new ViewSent();
+                return new cs446.mindme.Sent.ViewSent();
             case 2:
                 // History of reminders
-                return new ViewHistory();
+                return new cs446.mindme.History.ViewHistory();
         }
         return null;
     }
