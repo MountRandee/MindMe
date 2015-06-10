@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.*;
 
+import cs446.mindme.Adapters.TabsPagerAdapter;
+
 public class MainActivity extends FragmentActivity {
 
     ActionBar actionBar;

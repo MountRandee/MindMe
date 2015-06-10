@@ -8,39 +8,37 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cs446.mindme.ExpandableListAdapter;
+import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
+import cs446.mindme.ReminderDataHolder;
 
 public class ViewHistory extends Fragment {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    ArrayList<ReminderDataHolder> reminderList;
+    /*HashMap<String, List<String>> listDataChild;*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.view_history, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.history_list);
 
-        // preparing list data
-        prepareListData();
+        prepareSampleData();
 
-        listAdapter = new ExpandableListAdapter(rootView.getContext(), listDataHeader, listDataChild);
+        listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
 
-        // setting list adapter
         expListView.setAdapter(listAdapter);
 
         // Listview Group click listener
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 // Toast.makeText(getApplicationContext(),
                 // "Group Clicked " + listDataHeader.get(groupPosition),
                 // Toast.LENGTH_SHORT).show();
@@ -54,7 +52,7 @@ public class ViewHistory extends Fragment {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(rootView.getContext().getApplicationContext(),
-                        listDataHeader.get(groupPosition) + " Expanded",
+                        reminderList.get(groupPosition).getMessage() + " Expanded",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -65,13 +63,13 @@ public class ViewHistory extends Fragment {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Toast.makeText(rootView.getContext().getApplicationContext(),
-                        listDataHeader.get(groupPosition) + " Collapsed",
+                        reminderList.get(groupPosition).getMessage() + " Collapsed",
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        // Listview on child click listener
+       /* // Listview on child click listener
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -80,7 +78,7 @@ public class ViewHistory extends Fragment {
                 // TODO Auto-generated method stub
                 Toast.makeText(
                         rootView.getContext().getApplicationContext(),
-                        listDataHeader.get(groupPosition)
+                        reminderList.get(groupPosition)
                                 + " : "
                                 + listDataChild.get(
                                 listDataHeader.get(groupPosition)).get(
@@ -88,14 +86,25 @@ public class ViewHistory extends Fragment {
                         .show();
                 return false;
             }
-        });
+        });*/
 
         return rootView;
     }
 
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
+    private void prepareSampleData() {
+        reminderList = new ArrayList<ReminderDataHolder>();
+        ReminderDataHolder r1 = new ReminderDataHolder("Message1", "Randy Cheung", "12:00");
+        ReminderDataHolder r2 = new ReminderDataHolder("Message2", "Emily Na", "12:00");
+        ReminderDataHolder r3 = new ReminderDataHolder("Message3", "Arthur Jen", "12:00");
+        ReminderDataHolder r4 = new ReminderDataHolder("Message4", "Richard Fa", "12:00");
+
+        reminderList.add(r1);
+        reminderList.add(r2);
+        reminderList.add(r3);
+        reminderList.add(r4);
+
+        /*listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data
@@ -130,6 +139,6 @@ public class ViewHistory extends Fragment {
 
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        listDataChild.put(listDataHeader.get(2), comingSoon);*/
     }
 }

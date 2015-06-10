@@ -1,12 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
-    <TextView
-        android:id="@+id/lblListHeader"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/user_icon"
+        android:src="@mipmap/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="25dp"/>
-</LinearLayout>
+        android:layout_marginRight="5dp"/>
+
+    <TextView
+        android:id="@+id/reminder_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message goes here."
+        android:layout_above="@+id/reminder_from_text"
+        android:layout_toEndOf="@+id/user_icon" />
+
+    <TextView
+        android:id="@+id/reminder_from_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Randy Cheung"
+        android:layout_alignTop="@+id/reminder_timestamp"
+        android:layout_alignStart="@+id/reminder_text" />
+
+    <TextView
+        android:id="@+id/reminder_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/user_icon"
+        android:layout_alignParentEnd="true"
+        android:text="12:00" />
+
+</RelativeLayout>
