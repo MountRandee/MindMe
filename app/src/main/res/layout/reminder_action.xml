@@ -27,5 +27,4 @@
         android:text="Edit"
         android:layout_alignTop="@+id/button_decline"
         android:layout_toEndOf="@+id/button_decline" />
-
 </RelativeLayout>

@@ -40,14 +40,32 @@ public class ViewSent extends Fragment {
             }
         });
 
-        // When the child view expands
         // TODO: Remove if not needed
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int prevPosition = -1;
+            int prevCount = listAdapter.getGroupCount();
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage() + " Expanded",
-                        Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                        reminderList.get(groupPosition).getMessage()
+                                + " Expanded:" + groupPosition
+                                + " Prev:" + prevPosition,
+                        Toast.LENGTH_SHORT).show();*/
+                // Allow only one reminder action to be view at a time
+                if (prevPosition != groupPosition && prevPosition >= 0) {
+                    /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                            reminderList.get(groupPosition).getMessage()
+                                    + " prevCount:" + prevCount
+                                    + " currCount:" + listAdapter.getGroupCount(),
+                            Toast.LENGTH_SHORT).show();*/
+                    if (prevCount == listAdapter.getGroupCount()) {
+                        expListView.collapseGroup(prevPosition);
+                    }
+                    else {
+                        prevCount = listAdapter.getGroupCount();
+                    }
+                }
+                prevPosition = groupPosition;
             }
         });
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
@@ -20,55 +21,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this._reminderList = reminderList;
     }
 
-    // TODO: Need to implement the buttons as child somehow
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return null;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    // TODO: Need to implement the buttons as child somehow
-    @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.reminder_action, null);
-        }
-        return convertView;
-    }
-
-    // TODO: Should have 3 child for RECEIVED, 2 for SENT, # for HISTORY
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return 1;
-    }
-
-    @Override
-    public ReminderDataHolder getGroup(int groupPosition) {
-        return this._reminderList.get(groupPosition);
-    }
-
-    @Override
-    public int getGroupCount() { return this._reminderList.size(); }
-
-    @Override
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
-
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.reminder_item, null);
         }
 
@@ -83,10 +40,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         textViewFrom.setText(reminderFrom);
         textViewTime.setText(reminderTime);
 
-        // Only display the status if it's a HISTORY view
+        // Only display the status if it's a HISTORY view, and
         // Only display the status if it's not ACTIVE, i.e. COMPLETED or DECLINED
         // TODO: Edge case when a reminder in HISTORY has ACTIVE status, not likely to happen
-        // TODO: There may be a better to render this
+        // TODO: There may be a better way to do this
         if (ReminderDataHolder.reminderType.HISTORY == getGroup(groupPosition).getType() &&
                 ReminderDataHolder.reminderStatus.ACTIVE != getGroup(groupPosition).getStatus())
         {
@@ -97,6 +54,62 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
+
+    @Override
+    public ReminderDataHolder getGroup(int groupPosition) {
+        return this._reminderList.get(groupPosition);
+    }
+
+    @Override
+    public int getGroupCount() { return this._reminderList.size(); }
+
+    @Override
+    public long getGroupId(int groupPosition) { return groupPosition; }
+
+    // Removes the reminder from the list
+    public void removeGroup(int groupPosition)
+    {
+        _reminderList.remove(groupPosition);
+        notifyDataSetChanged();
+    }
+
+    // TODO: Need to implement the buttons as child somehow
+    @Override
+    public View getChildView(final int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this._context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.reminder_action, null);
+        }
+
+        if (ReminderDataHolder.reminderType.HISTORY != getGroup(groupPosition).getType()) {
+            Button buttonCompleted = (Button) convertView.findViewById(R.id.button_finished);
+            buttonCompleted.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeGroup(groupPosition);
+                }
+            });
+        }
+
+        return convertView;
+    }
+
+    // TODO: Need to implement the buttons as child somehow
+    @Override
+    public Object getChild(int groupPosition, int childPosititon) {
+        return null;
+    }
+
+    // Note: 1 represents the entire reminder_action.xml, so 2 creates 6 buttons.
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return 1;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) { return childPosition; }
 
     @Override
     public boolean hasStableIds() {return false; }

@@ -32,7 +32,7 @@ public class ViewReceived extends Fragment {
 
         expListView.setAdapter(listAdapter);
 
-        // TODO: Figure out why it must be false to show child
+        // Must be false to enable child views
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -40,25 +40,42 @@ public class ViewReceived extends Fragment {
             }
         });
 
-        // When the child view expands
         // TODO: Remove if not needed
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int prevPosition = -1;
+            int prevCount = listAdapter.getGroupCount();
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage() + " Expanded",
-                        Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                        reminderList.get(groupPosition).getMessage()
+                                + " Expanded:" + groupPosition
+                                + " Prev:" + prevPosition,
+                        Toast.LENGTH_SHORT).show();*/
+                // Allow only one reminder action to be view at a time
+                if (prevPosition != groupPosition && prevPosition >= 0) {
+                    /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                            reminderList.get(groupPosition).getMessage()
+                                    + " prevCount:" + prevCount
+                                    + " currCount:" + listAdapter.getGroupCount(),
+                            Toast.LENGTH_SHORT).show();*/
+                    if (prevCount == listAdapter.getGroupCount()) {
+                        expListView.collapseGroup(prevPosition);
+                    }
+                    else {
+                        prevCount = listAdapter.getGroupCount();
+                    }
+                }
+                prevPosition = groupPosition;
             }
         });
 
-        // When the child view collapses
         // TODO: Remove if not needed
         expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(rootView.getContext().getApplicationContext(),
+               /* Toast.makeText(rootView.getContext().getApplicationContext(),
                         reminderList.get(groupPosition).getMessage() + " Collapsed",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();*/
             }
         });
 
@@ -67,6 +84,7 @@ public class ViewReceived extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
+                // listAdapter.removeGroup(groupPosition);
                 return true;
             }});
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,43 +31,14 @@ public class ViewHistory extends Fragment {
 
         expListView.setAdapter(listAdapter);
 
-        // TODO: Figure out why it must be false to show child
+        // TODO: Temporarily true to disable actions for the reminders in HISTORY
+        // TODO: Decide if any actions are needed for reminders in HISTORY
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return false;
-            }
-        });
-
-        // When the child view expands
-        // TODO: Remove if not needed
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage() + " Expanded",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // When the child view collapses
-        // TODO: Remove if not needed
-        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage() + " Collapsed",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // TODO: Child click listener - when the buttons are pressed, reminders should go away, etc
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
                 return true;
-            }});
+            }
+        });
 
         return rootView;
     }
