@@ -50,12 +50,12 @@ public class MainActivity extends FragmentActivity {
         };
 
         // Add 3 tabs, specifying the tab's text and TabListener
-        for (int i = 0; i < 3; i++) {
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText("Tab " + (i + 1))
-                            .setTabListener(tabListener));
-        }
+        actionBar.addTab(actionBar.newTab().setText(ReminderDataHolder.reminderType.RECEIVED.toString())
+                .setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(ReminderDataHolder.reminderType.SENT.toString())
+                .setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(ReminderDataHolder.reminderType.HISTORY.toString())
+                .setTabListener(tabListener));
     }
 
     @Override

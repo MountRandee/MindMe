@@ -32,12 +32,11 @@ public class ViewReceived extends Fragment {
 
         expListView.setAdapter(listAdapter);
 
-        // When the child view is clicked
-        // TODO: Remove if not needed
+        // TODO: Figure out why it must be false to show child
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return true;
+                return false;
             }
         });
 
