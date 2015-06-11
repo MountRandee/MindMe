@@ -8,10 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
@@ -22,10 +19,10 @@ public class ViewHistory extends Fragment {
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
-    /*HashMap<String, List<String>> listDataChild;*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         final View rootView = inflater.inflate(R.layout.view_history, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.history_list);
 
@@ -35,20 +32,18 @@ public class ViewHistory extends Fragment {
 
         expListView.setAdapter(listAdapter);
 
-        // Listview Group click listener
+        // When the child view is clicked
+        // TODO: Remove if not needed
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                // Toast.makeText(getApplicationContext(),
-                // "Group Clicked " + listDataHeader.get(groupPosition),
-                // Toast.LENGTH_SHORT).show();
-                return false;
+                return true;
             }
         });
 
-        // Listview Group expanded listener
+        // When the child view expands
+        // TODO: Remove if not needed
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(rootView.getContext().getApplicationContext(),
@@ -57,88 +52,41 @@ public class ViewHistory extends Fragment {
             }
         });
 
-        // Listview Group collasped listener
+        // When the child view collapses
+        // TODO: Remove if not needed
         expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Toast.makeText(rootView.getContext().getApplicationContext(),
                         reminderList.get(groupPosition).getMessage() + " Collapsed",
                         Toast.LENGTH_SHORT).show();
-
             }
         });
 
-       /* // Listview on child click listener
+        // TODO: Child click listener - when the buttons are pressed, reminders should go away, etc
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                // TODO Auto-generated method stub
-                Toast.makeText(
-                        rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
-                return false;
-            }
-        });*/
+                return true;
+            }});
 
         return rootView;
     }
 
-
     private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
-        ReminderDataHolder r1 = new ReminderDataHolder("Message1", "Randy Cheung", "12:00");
-        ReminderDataHolder r2 = new ReminderDataHolder("Message2", "Emily Na", "12:00");
-        ReminderDataHolder r3 = new ReminderDataHolder("Message3", "Arthur Jen", "12:00");
-        ReminderDataHolder r4 = new ReminderDataHolder("Message4", "Richard Fa", "12:00");
-
+        ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
+                "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);
+        ReminderDataHolder r2 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
+                "Message2", "Emily Na", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);
+        ReminderDataHolder r3 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
+                "Message3", "Arthur Jen", "12:00", ReminderDataHolder.reminderStatus.DECLINED);
+        ReminderDataHolder r4 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
+                "Message4", "Richard Fa", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
         reminderList.add(r1);
         reminderList.add(r2);
         reminderList.add(r3);
         reminderList.add(r4);
-
-        /*listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-
-        // Adding child data
-        listDataHeader.add("Top 250");
-        listDataHeader.add("Now Showing");
-        listDataHeader.add("Coming Soon..");
-
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
-
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
-
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);*/
     }
 }

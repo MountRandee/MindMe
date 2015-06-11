@@ -28,6 +28,14 @@
         android:layout_alignStart="@+id/reminder_text" />
 
     <TextView
+        android:id="@+id/reminder_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@null"
+        android:layout_alignTop="@+id/reminder_text"
+        android:layout_alignEnd="@+id/reminder_timestamp" />
+
+    <TextView
         android:id="@+id/reminder_timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

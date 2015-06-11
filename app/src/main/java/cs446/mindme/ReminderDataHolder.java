@@ -2,28 +2,32 @@ package cs446.mindme;
 
 public class ReminderDataHolder {
 
-    private String _type;
+    public enum reminderType {
+        RECEIVED, SENT, HISTORY
+    }
+
+    public enum reminderStatus {
+        COMPLETED, DECLINED, ACTIVE
+    }
+
+    private reminderType _type;
     private String _message;
     private String _from;
     private String _time;
-    private boolean _status;
+    private reminderStatus _status;
 
-    public ReminderDataHolder(String m, String f, String t) {
-        this._message = m;
-        this._from = f;
-        this._time = t;
+    public ReminderDataHolder(reminderType type, String msg, String from, String time, reminderStatus status) {
+        this._type = type;
+        this._message = msg;
+        this._from = from;
+        this._time = time;
+        this._status = status;
     }
 
-    public ReminderDataHolder(String m, String f, String t, boolean s) {
-        this._message = m;
-        this._from = f;
-        this._time = t;
-        this._status = s;
-    }
-
+    public reminderType getType() { return _type; }
     public String getMessage() { return _message; }
     public String getFrom() { return _from; }
     public String getTime () { return _time; }
-    public boolean getStatus() { return _status; }
+    public reminderStatus getStatus() { return _status; }
 
 }
