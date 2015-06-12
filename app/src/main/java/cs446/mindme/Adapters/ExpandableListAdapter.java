@@ -1,7 +1,9 @@
 package cs446.mindme.Adapters;
 
+import java.io.Console;
 import java.util.ArrayList;
 import android.content.Context;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
 
@@ -69,14 +73,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int groupPosition) { return groupPosition; }
 
     // Removes the reminder from the list
-    public void removeGroup(int groupPosition, View parent, View view)
+    public void removeGroup(int groupPosition, View parent)
     {
         _reminderList.remove(groupPosition);
         notifyDataSetChanged();
         // NotifyDataSetChanged does not update views, must collapse child with the groupPosition
         if (groupPosition < getGroupCount() + 1) {
-            // TODO: must be implemented for all lists, cant be for just received list
-            ExpandableListView v = (ExpandableListView) parent.findViewById(R.id.received_list);
+            // Parent is the R.id.received_list/sent_list
+            ExpandableListView v = (ExpandableListView) parent;
             v.collapseGroup(groupPosition);
         }
     }
@@ -95,13 +99,25 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         // TODO: The reminder should be added to HISTORY.
         // TODO: Other buttons, and different buttons for different views.
         if (ReminderDataHolder.reminderType.HISTORY != getGroup(groupPosition).getType()) {
-            Button buttonCompleted = (Button) convertView.findViewById(R.id.button_finished);
-            buttonCompleted.setOnClickListener( new View.OnClickListener() {
+            Button buttonDeclined = (Button) convertView.findViewById(R.id.button_decline);
+            buttonDeclined.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    removeGroup(groupPosition, parent, v);
+                    removeGroup(groupPosition, parent);
                 }
             });
+            // Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
+            Button buttonCompleted = (Button) convertView.findViewById(R.id.button_finished);
+            if (ReminderDataHolder.reminderType.RECEIVED == getGroup(groupPosition).getType()) {
+                buttonCompleted.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeGroup(groupPosition, parent);
+                    }
+                });
+            } else {
+                buttonCompleted.setVisibility(View.GONE);
+            }
         }
 
         return convertView;
