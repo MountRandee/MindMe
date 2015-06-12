@@ -33,6 +33,7 @@ public class ViewReceived extends Fragment {
         expListView.setAdapter(listAdapter);
 
         // Must be false to enable child views
+        // TODO: Figure out why???
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -40,10 +41,10 @@ public class ViewReceived extends Fragment {
             }
         });
 
-        // TODO: Remove if not needed
+        // When reminder expanded, collapse the previous expanded reminder
+        // TODO: Remove toast later
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int prevPosition = -1;
-            int prevCount = listAdapter.getGroupCount();
             @Override
             public void onGroupExpand(int groupPosition) {
                 /*Toast.makeText(rootView.getContext().getApplicationContext(),
@@ -51,19 +52,16 @@ public class ViewReceived extends Fragment {
                                 + " Expanded:" + groupPosition
                                 + " Prev:" + prevPosition,
                         Toast.LENGTH_SHORT).show();*/
-                // Allow only one reminder action to be view at a time
-                if (prevPosition != groupPosition && prevPosition >= 0) {
-                    /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                if (prevPosition != groupPosition) {
+                   /* Toast.makeText(rootView.getContext().getApplicationContext(),
                             reminderList.get(groupPosition).getMessage()
-                                    + " prevCount:" + prevCount
+                                    *//*+ " prevCount:" + prevCount*//*
                                     + " currCount:" + listAdapter.getGroupCount(),
                             Toast.LENGTH_SHORT).show();*/
-                    if (prevCount == listAdapter.getGroupCount()) {
-                        expListView.collapseGroup(prevPosition);
-                    }
-                    else {
-                        prevCount = listAdapter.getGroupCount();
-                    }
+                    // This may be executed even if position doesn't exit.
+                    // Initially didn't work when removing reminders, had to compare with list count.
+                    // TODO: Why?
+                    expListView.collapseGroup(prevPosition);
                 }
                 prevPosition = groupPosition;
             }
@@ -79,12 +77,12 @@ public class ViewReceived extends Fragment {
             }
         });
 
-        // TODO: Child click listener - when the buttons are pressed, reminders should go away, etc
+        // Note: Reminder actions are implemented in the adapter.
+        // TODO: Remove if unnecessary.
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                // listAdapter.removeGroup(groupPosition);
                 return true;
             }});
 

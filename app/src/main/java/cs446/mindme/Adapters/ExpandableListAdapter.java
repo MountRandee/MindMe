@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
@@ -23,6 +24,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -67,28 +69,37 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int groupPosition) { return groupPosition; }
 
     // Removes the reminder from the list
-    public void removeGroup(int groupPosition)
+    public void removeGroup(int groupPosition, View parent, View view)
     {
         _reminderList.remove(groupPosition);
         notifyDataSetChanged();
+        // NotifyDataSetChanged does not update views, must collapse child with the groupPosition
+        if (groupPosition < getGroupCount() + 1) {
+            // TODO: must be implemented for all lists, cant be for just received list
+            ExpandableListView v = (ExpandableListView) parent.findViewById(R.id.received_list);
+            v.collapseGroup(groupPosition);
+        }
     }
 
     // TODO: Need to implement the buttons as child somehow
     @Override
     public View getChildView(final int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+                             boolean isLastChild, View convertView, final ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.reminder_action, null);
         }
 
+        // When the Completed button is clicked, it should remove the reminder.
+        // TODO: The reminder should be added to HISTORY.
+        // TODO: Other buttons, and different buttons for different views.
         if (ReminderDataHolder.reminderType.HISTORY != getGroup(groupPosition).getType()) {
             Button buttonCompleted = (Button) convertView.findViewById(R.id.button_finished);
             buttonCompleted.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    removeGroup(groupPosition);
+                    removeGroup(groupPosition, parent, v);
                 }
             });
         }
