@@ -5,10 +5,10 @@
     android:padding="5dp">
 
     <Button
-        android:id="@+id/button_finished"
+        android:id="@+id/button_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Completed"
+        android:text="Complete"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"/>
 
@@ -16,9 +16,9 @@
         android:id="@+id/button_decline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Declined"
+        android:text="Decline"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/button_finished" />
+        android:layout_toEndOf="@+id/button_complete" />
 
     <Button
         android:id="@+id/button_edit"

@@ -30,6 +30,7 @@ public class MainActivity extends FragmentActivity {
                     public void onPageSelected(int position) {
                         // When swiping between pages, select the corresponding tab.
                         getActionBar().setSelectedNavigationItem(position);
+                        System.out.println("onPageSelected: " + position);
                     }
                 });
         viewPager.setAdapter(tabsPagerAdapter);
@@ -40,6 +41,7 @@ public class MainActivity extends FragmentActivity {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // show the given tab
                 viewPager.setCurrentItem(tab.getPosition());
+                System.out.println("onTabSelected: " + tab.getPosition());
             }
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // hide the given tab

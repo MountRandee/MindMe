@@ -4,8 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_new_reminder"
+        android:icon="@drawable/new_reminder"
+        android:title="@null"
+        app:showAsAction="ifRoom" />
+
 </menu>

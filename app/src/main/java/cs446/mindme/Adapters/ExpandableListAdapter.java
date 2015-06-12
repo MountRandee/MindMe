@@ -1,17 +1,18 @@
 package cs446.mindme.Adapters;
 
-import java.io.Console;
 import java.util.ArrayList;
+
+import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Debug;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
@@ -77,6 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     {
         _reminderList.remove(groupPosition);
         notifyDataSetChanged();
+
         // NotifyDataSetChanged does not update views, must collapse child with the groupPosition
         if (groupPosition < getGroupCount() + 1) {
             // Parent is the R.id.received_list/sent_list
@@ -99,24 +101,45 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         // TODO: The reminder should be added to HISTORY.
         // TODO: Other buttons, and different buttons for different views.
         if (ReminderDataHolder.reminderType.HISTORY != getGroup(groupPosition).getType()) {
-            Button buttonDeclined = (Button) convertView.findViewById(R.id.button_decline);
-            buttonDeclined.setOnClickListener( new View.OnClickListener() {
+            Button buttonDecline = (Button) convertView.findViewById(R.id.button_decline);
+            buttonDecline.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     removeGroup(groupPosition, parent);
                 }
             });
-            // Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
-            Button buttonCompleted = (Button) convertView.findViewById(R.id.button_finished);
+            Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
+
+            AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
+
+            final EditText editText = new EditText(_context);
+            editableDialog.setMessage(getGroup(groupPosition).getMessage());
+            editableDialog.setTitle("Edit");
+            editableDialog.setView(editText);
+            editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    // TODO: change the group
+                }
+            });
+            editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                }
+            });
+
+            Button buttonComplete = (Button) convertView.findViewById(R.id.button_complete);
             if (ReminderDataHolder.reminderType.RECEIVED == getGroup(groupPosition).getType()) {
-                buttonCompleted.setOnClickListener(new View.OnClickListener() {
+                buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         removeGroup(groupPosition, parent);
                     }
                 });
             } else {
-                buttonCompleted.setVisibility(View.GONE);
+                buttonComplete.setVisibility(View.GONE);
             }
         }
 
