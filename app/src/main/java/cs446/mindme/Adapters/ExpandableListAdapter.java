@@ -111,31 +111,31 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
             // Received and Sent reminders have an Edit button
             Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
-            final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
-            final EditText editText = new EditText(_context);
-            editableDialog.setMessage(getGroup(groupPosition).getMessage());
-            editableDialog.setTitle("Edit");
-            editableDialog.setView(editText);
-            editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO: change the group
-                }
-            });
-            editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                    // Do nothing
-                }
-            });
             buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: Getting weird error:
-                    // The specified child already has a parent. You must call removeView() on the child's parent first.
-                    // Reproduce: Click Edit, Click Ok/Cancel, Click Edit again
+                    // Must always create a new dialog
+                    final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
+                    final EditText editText = new EditText(_context);
+                    editableDialog.setMessage(getGroup(groupPosition).getMessage());
+                    editableDialog.setTitle("Edit");
+                    editableDialog.setView(editText);
+                    editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getGroup(groupPosition).set_message(editText.getText().toString());
+                            notifyDataSetChanged();
+                        }
+                    });
+                    editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            // Do nothing
+                        }
+                    });
                     editableDialog.show();
+
                 }
             });
 
