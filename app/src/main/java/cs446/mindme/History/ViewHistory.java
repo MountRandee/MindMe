@@ -17,16 +17,14 @@ public class ViewHistory extends Fragment {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    ArrayList<ReminderDataHolder> reminderList;
+    ArrayList<ReminderDataHolder> reminderList = new ArrayList<ReminderDataHolder>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.view_history, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.history_list);
-
         prepareSampleData();
-
         listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
 
         expListView.setAdapter(listAdapter);
@@ -43,7 +41,7 @@ public class ViewHistory extends Fragment {
         return rootView;
     }
 
-    private void prepareSampleData() {
+   private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
                 "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);

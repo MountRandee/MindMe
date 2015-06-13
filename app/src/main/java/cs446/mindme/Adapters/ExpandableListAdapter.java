@@ -87,31 +87,31 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    // TODO: Need to implement the buttons as child somehow
     @Override
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, final ViewGroup parent) {
+        ReminderDataHolder.reminderType rType = getGroup(groupPosition).getType();
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.reminder_action, null);
+            if (ReminderDataHolder.reminderType.RECEIVED == rType) {
+                convertView = infalInflater.inflate(R.layout.reminder_actions_for_received, null);
+            } else if (ReminderDataHolder.reminderType.SENT == rType) {
+                convertView = infalInflater.inflate(R.layout.reminder_actions_for_sent, null);
+            } else {
+                convertView = infalInflater.inflate(R.layout.empty_layout, null);
+            }
         }
 
-        // When the Completed button is clicked, it should remove the reminder.
-        // TODO: The reminder should be added to HISTORY.
-        // TODO: Other buttons, and different buttons for different views.
-        if (ReminderDataHolder.reminderType.HISTORY != getGroup(groupPosition).getType()) {
-            Button buttonDecline = (Button) convertView.findViewById(R.id.button_decline);
-            buttonDecline.setOnClickListener( new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeGroup(groupPosition, parent);
-                }
-            });
+        // When the Complete/Decline/Cancel button is clicked, it should remove the reminder.
+        // When the Edit button is clicked, user should be able to edit the reminder.
+        // TODO: The reminder should be added to HISTORY after complete/decline/cancel.
+        // TODO: History View has no reminder actions temporarily.
+        if (ReminderDataHolder.reminderType.HISTORY != rType) {
+
+            // Received and Sent reminders have an Edit button
             Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
-
-            AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
-
+            final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
             final EditText editText = new EditText(_context);
             editableDialog.setMessage(getGroup(groupPosition).getMessage());
             editableDialog.setTitle("Edit");
@@ -119,27 +119,52 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
                     // TODO: change the group
                 }
             });
             editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                     // Do nothing
                 }
             });
+            buttonEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: Getting weird error:
+                    // The specified child already has a parent. You must call removeView() on the child's parent first.
+                    // Reproduce: Click Edit, Click Ok/Cancel, Click Edit again
+                    editableDialog.show();
+                }
+            });
 
-            Button buttonComplete = (Button) convertView.findViewById(R.id.button_complete);
-            if (ReminderDataHolder.reminderType.RECEIVED == getGroup(groupPosition).getType()) {
+            if (ReminderDataHolder.reminderType.RECEIVED == rType) {
+                Button buttonComplete = (Button) convertView.findViewById(R.id.button_complete);
+                Button buttonDecline = (Button) convertView.findViewById(R.id.button_decline);
+                // Received reminders also have Complete and Decline buttons
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         removeGroup(groupPosition, parent);
                     }
                 });
+                buttonDecline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeGroup(groupPosition, parent);
+                    }
+                });
+
             } else {
-                buttonComplete.setVisibility(View.GONE);
+                // Sent reminders also have Cancel buttons
+                Button buttonCancel = (Button) convertView.findViewById(R.id.button_cancel);
+                buttonCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick (View v) {
+                        removeGroup(groupPosition, parent);
+                    }
+                });
             }
         }
 
@@ -152,7 +177,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return null;
     }
 
-    // Note: 1 represents the entire reminder_action.xml, so 2 creates 6 buttons.
+    // Note: 1 represents the entire xml, so 2 creates 6 buttons.
     @Override
     public int getChildrenCount(int groupPosition) {
         return 1;
