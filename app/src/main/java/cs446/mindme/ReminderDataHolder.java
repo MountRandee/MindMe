@@ -30,4 +30,8 @@ public class ReminderDataHolder {
     public String getTime () { return _time; }
     public reminderStatus getStatus() { return _status; }
 
+    public void set_message(String msg) {
+        this._message = msg;
+    }
+
 }

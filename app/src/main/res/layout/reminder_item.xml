@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#DADADA"
     android:padding="5dp">
-
     <ImageView
         android:id="@+id/user_icon"
         android:src="@mipmap/ic_launcher"
@@ -21,10 +20,12 @@
 
     <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_from_text"
-        android:text="Randy Cheung"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User name goes here."
         android:layout_alignTop="@+id/reminder_timestamp"
         android:layout_alignStart="@+id/reminder_text" />
-
+    
     <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_status"
         android:layout_alignTop="@+id/reminder_text"
@@ -34,6 +35,5 @@
         android:id="@+id/reminder_timestamp"
         android:layout_alignBottom="@+id/user_icon"
         android:layout_alignParentEnd="true"
-        android:text="12:00" />
-
+        android:text="Timestamp" />
 </RelativeLayout>

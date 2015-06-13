@@ -3,28 +3,25 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="5dp">
-
     <Button
-        android:id="@+id/button_finished"
+        android:id="@+id/button_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Completed"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"/>
-
+        android:text="Complete"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
     <Button
         android:id="@+id/button_decline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Declined"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/button_finished" />
-
+        android:text="Decline"
+        android:layout_alignTop="@+id/button_complete"
+        android:layout_toEndOf="@+id/button_complete" />
     <Button
         android:id="@+id/button_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit"
-        android:layout_alignTop="@+id/button_decline"
+        android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/button_decline" />
 </RelativeLayout>

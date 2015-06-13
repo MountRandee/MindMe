@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -84,7 +83,8 @@ public class ViewSent extends Fragment {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 return true;
-            }});
+            }
+        });
 
         return rootView;
     }
@@ -97,7 +97,7 @@ public class ViewSent extends Fragment {
                 "Message2", "Emily Na", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);
         ReminderDataHolder r3 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                 "Message3", "Arthur Jen", "12:00", ReminderDataHolder.reminderStatus.DECLINED);
-        ReminderDataHolder r4 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
+        ReminderDataHolder r4 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                 "Message4", "Richard Fa", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
         reminderList.add(r1);
         reminderList.add(r2);

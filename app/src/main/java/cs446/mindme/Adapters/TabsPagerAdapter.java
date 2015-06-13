@@ -3,6 +3,7 @@ package cs446.mindme.Adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
@@ -12,6 +13,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int index) {
+        System.out.println(index);
         switch (index) {
             case 0:
                 // Received reminders view
@@ -32,4 +34,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        // Note: For some reason views were being destroyed and recreated again,
+        // e.g. going from deleting from received, going to history, coming back to received,
+        // reminders reappear in received when they shouldn't
+        // TODO: Figure out why
+    }
 }
