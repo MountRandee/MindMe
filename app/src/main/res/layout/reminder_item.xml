@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ReminderItem"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:background="#DADADA"
     android:padding="5dp">
     <ImageView
         android:id="@+id/user_icon"
@@ -25,7 +25,7 @@
         android:text="User name goes here."
         android:layout_alignTop="@+id/reminder_timestamp"
         android:layout_alignStart="@+id/reminder_text" />
-    
+
     <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_status"
         android:layout_alignTop="@+id/reminder_text"
