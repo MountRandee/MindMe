@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
+    android:background="#DADADA"
     android:padding="5dp">
 
     <ImageView
@@ -11,34 +12,26 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"/>
 
-    <TextView
+    <TextView style="@style/ReminderItemText.Large"
         android:id="@+id/reminder_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:text="Message goes here."
         android:layout_above="@+id/reminder_from_text"
         android:layout_toEndOf="@+id/user_icon" />
 
-    <TextView
+    <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_from_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Randy Cheung"
         android:layout_alignTop="@+id/reminder_timestamp"
         android:layout_alignStart="@+id/reminder_text" />
 
-    <TextView
+    <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@null"
         android:layout_alignTop="@+id/reminder_text"
         android:layout_alignEnd="@+id/reminder_timestamp" />
 
-    <TextView
+    <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/user_icon"
         android:layout_alignParentEnd="true"
         android:text="12:00" />
