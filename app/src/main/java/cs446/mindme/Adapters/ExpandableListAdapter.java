@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
@@ -123,8 +124,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getGroup(groupPosition).set_message(editText.getText().toString());
-                            notifyDataSetChanged();
+                            String changedMessage = editText.getText().toString();
+                            if (changedMessage.isEmpty()) {
+                                Toast.makeText(_context, "Reminder message empty !", Toast.LENGTH_SHORT).show();
+                            } else {
+                                getGroup(groupPosition).set_message(changedMessage);
+                                notifyDataSetChanged();
+                            }
                         }
                     });
                     editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
