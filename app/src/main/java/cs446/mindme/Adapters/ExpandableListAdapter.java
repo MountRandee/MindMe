@@ -39,10 +39,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         // Each reminder item should have a message, whom its from, and the timestamp
         TextView textViewMessage = (TextView) convertView.findViewById(R.id.reminder_text);
-        String reminderMessage = (String) getGroup(groupPosition).getMessage();
         TextView textViewFrom = (TextView) convertView.findViewById(R.id.reminder_from_text);
-        String reminderFrom = (String) getGroup(groupPosition).getFrom();
         TextView textViewTime = (TextView) convertView.findViewById(R.id.reminder_timestamp);
+        String reminderMessage = (String) getGroup(groupPosition).getMessage();
+        String reminderFrom = (String) getGroup(groupPosition).getFrom();
         String reminderTime = (String) getGroup(groupPosition).getTime();
         textViewMessage.setText(reminderMessage);
         textViewFrom.setText(reminderFrom);
@@ -55,8 +55,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (ReminderDataHolder.reminderType.HISTORY == getGroup(groupPosition).getType() &&
                 ReminderDataHolder.reminderStatus.ACTIVE != getGroup(groupPosition).getStatus())
         {
+            ReminderDataHolder.reminderStatus reminderStatus = getGroup(groupPosition).getStatus();
             TextView textViewStatus = (TextView) convertView.findViewById(R.id.reminder_status);
-            ReminderDataHolder.reminderStatus reminderStatus = (ReminderDataHolder.reminderStatus) getGroup(groupPosition).getStatus();
             textViewStatus.setText(reminderStatus.toString());
         }
 
@@ -77,7 +77,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // Removes the reminder from the list
     public void removeGroup(int groupPosition, View parent)
     {
-        _reminderList.remove(groupPosition);
+         _reminderList.remove(groupPosition);
+
+        // TODO: if removed, then should populate in history view
         notifyDataSetChanged();
 
         // NotifyDataSetChanged does not update views, must collapse child with the groupPosition
@@ -141,7 +143,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         }
                     });
                     editableDialog.show();
-
                 }
             });
 
@@ -168,6 +169,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick (View v) {
+
                         removeGroup(groupPosition, parent);
                     }
                 });
@@ -197,4 +199,5 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) { return true; }
+
 }

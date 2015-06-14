@@ -2,6 +2,7 @@ package cs446.mindme;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,25 +15,33 @@ public class MainActivity extends FragmentActivity {
     ActionBar actionBar;
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
+    boolean populateOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // TODO: remove this
+        if (populateOnce == false) {
+            SampleData.populateSampleData();
+            populateOnce = true;
+        }
 
         actionBar = getActionBar();
         tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        // When swiping between pages, select the corresponding tab.
-                        getActionBar().setSelectedNavigationItem(position);
-                        System.out.println("onPageSelected: " + position);
-                    }
-                });
+            new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    // When swiping between pages, select the corresponding tab.
+                    getActionBar().setSelectedNavigationItem(position);
+                    // System.out.println("onPageSelected: " + position);
+                }
+            }
+        );
         viewPager.setAdapter(tabsPagerAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -41,7 +50,7 @@ public class MainActivity extends FragmentActivity {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // show the given tab
                 viewPager.setCurrentItem(tab.getPosition());
-                System.out.println("onTabSelected: " + tab.getPosition());
+                 // System.out.println("onTabSelected: " + tab.getPosition());
             }
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // hide the given tab
@@ -60,6 +69,18 @@ public class MainActivity extends FragmentActivity {
                 .setTabListener(tabListener));
     }
 
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 0:
+                if(resultCode == RESULT_OK) {
+                    //Do something useful with data
+                }
+                break;
+        }
+    }*/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -74,7 +95,7 @@ public class MainActivity extends FragmentActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

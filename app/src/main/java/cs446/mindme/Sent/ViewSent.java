@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.SampleData;
 
 public class ViewSent extends Fragment {
 
@@ -21,14 +22,13 @@ public class ViewSent extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        System.out.println("creating sent");
         final View rootView = inflater.inflate(R.layout.view_sent, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.sent_list);
 
-        prepareSampleData();
-
+        // prepareSampleData();
+        reminderList = SampleData.getSentList();
         listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
-
         expListView.setAdapter(listAdapter);
 
         // Must be false to enable child views
@@ -44,6 +44,7 @@ public class ViewSent extends Fragment {
         // TODO: Remove toast later
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int prevPosition = -1;
+
             @Override
             public void onGroupExpand(int groupPosition) {
                 /*Toast.makeText(rootView.getContext().getApplicationContext(),
@@ -89,7 +90,7 @@ public class ViewSent extends Fragment {
         return rootView;
     }
 
-    private void prepareSampleData() {
+   /* private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                 "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
@@ -103,5 +104,5 @@ public class ViewSent extends Fragment {
         reminderList.add(r2);
         reminderList.add(r3);
         reminderList.add(r4);
-    }
+    }*/
 }

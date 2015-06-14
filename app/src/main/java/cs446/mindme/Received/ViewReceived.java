@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.SampleData;
 
 public class ViewReceived extends Fragment {
 
@@ -20,16 +21,14 @@ public class ViewReceived extends Fragment {
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        System.out.println("creating received");
         final View rootView = inflater.inflate(R.layout.view_received, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.received_list);
 
-        prepareSampleData();
-
+        //prepareSampleData();
+        reminderList = SampleData.getReceivedList();
         listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
-
         expListView.setAdapter(listAdapter);
 
         // Must be false to enable child views
@@ -45,6 +44,7 @@ public class ViewReceived extends Fragment {
         // TODO: Remove toast later
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int prevPosition = -1;
+
             @Override
             public void onGroupExpand(int groupPosition) {
                 /*Toast.makeText(rootView.getContext().getApplicationContext(),
@@ -84,12 +84,13 @@ public class ViewReceived extends Fragment {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 return true;
-            }});
+            }
+        });
 
         return rootView;
     }
 
-    private void prepareSampleData() {
+    /*private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
                 "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
@@ -103,5 +104,5 @@ public class ViewReceived extends Fragment {
         reminderList.add(r2);
         reminderList.add(r3);
         reminderList.add(r4);
-    }
+    }*/
 }

@@ -7,7 +7,7 @@ public class ReminderDataHolder {
     }
 
     public enum reminderStatus {
-        COMPLETED, DECLINED, ACTIVE
+        COMPLETED, DECLINED, CANCELLED, ACTIVE
     }
 
     private reminderType _type;
@@ -34,4 +34,11 @@ public class ReminderDataHolder {
         this._message = msg;
     }
 
+    public void set_type(reminderType type) {
+        this._type = type;
+    }
+
+    public void set_status(reminderStatus status) {
+        this._status = status;
+    }
 }

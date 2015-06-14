@@ -13,16 +13,12 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int index) {
-        System.out.println(index);
         switch (index) {
             case 0:
-                // Received reminders view
                 return new cs446.mindme.Received.ViewReceived();
             case 1:
-                // Sent reminders view
                 return new cs446.mindme.Sent.ViewSent();
             case 2:
-                // History of reminders view
                 return new cs446.mindme.History.ViewHistory();
         }
         return null;

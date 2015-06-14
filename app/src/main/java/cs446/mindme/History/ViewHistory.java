@@ -6,27 +6,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-
 import java.util.ArrayList;
-
 import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.SampleData;
 
 public class ViewHistory extends Fragment {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    ArrayList<ReminderDataHolder> reminderList = new ArrayList<ReminderDataHolder>();
+    ArrayList<ReminderDataHolder> reminderList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        System.out.println("creating history");
         final View rootView = inflater.inflate(R.layout.view_history, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.history_list);
-        prepareSampleData();
-        listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
 
+        // prepareSampleData();
+        reminderList = SampleData.getHistoryList();
+        listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
         expListView.setAdapter(listAdapter);
 
         // TODO: Temporarily true to disable actions for the reminders in HISTORY
@@ -41,7 +42,7 @@ public class ViewHistory extends Fragment {
         return rootView;
     }
 
-   private void prepareSampleData() {
+  /* private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
                 "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);
@@ -55,5 +56,5 @@ public class ViewHistory extends Fragment {
         reminderList.add(r2);
         reminderList.add(r3);
         reminderList.add(r4);
-    }
+    }*/
 }
