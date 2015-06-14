@@ -42,7 +42,15 @@ public class ViewHistory extends Fragment {
         return rootView;
     }
 
-  /* private void prepareSampleData() {
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (listAdapter != null && this.isVisible()) {
+            listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /* private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.HISTORY,
                 "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);

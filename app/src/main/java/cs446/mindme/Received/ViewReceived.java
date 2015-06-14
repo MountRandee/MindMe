@@ -90,6 +90,15 @@ public class ViewReceived extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (listAdapter != null && this.isVisible()) {
+            listAdapter.notifyDataSetChanged();
+        }
+    }
+
+
     /*private void prepareSampleData() {
         reminderList = new ArrayList<ReminderDataHolder>();
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,

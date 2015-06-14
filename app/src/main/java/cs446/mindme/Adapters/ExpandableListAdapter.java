@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import cs446.mindme.R;
 import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.SampleData;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -77,6 +78,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // Removes the reminder from the list
     public void removeGroup(int groupPosition, View parent)
     {
+
+        if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.RECEIVED) {
+            SampleData.addToHistory(0,groupPosition);
+        } else if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.SENT) {
+            SampleData.addToHistory(1, groupPosition);
+        }
          _reminderList.remove(groupPosition);
 
         // TODO: if removed, then should populate in history view
