@@ -22,18 +22,18 @@ public class SampleData {
         }
     }
 
-    static public void addToHistory(int listId, int pos) {
+    static public void addToHistory(int listId, ReminderDataHolder.reminderStatus status, int pos) {
         switch (listId) {
             case 0:
                 ReminderDataHolder temp = receivedList.get(pos);
                 temp.set_type(ReminderDataHolder.reminderType.HISTORY);
-                temp.set_status(ReminderDataHolder.reminderStatus.COMPLETED);
+                temp.set_status(status);
                 historyList.add(temp);
                 break;
             case 1:
                 ReminderDataHolder temp2 = sentList.get(pos);
                 temp2.set_type(ReminderDataHolder.reminderType.HISTORY);
-                temp2.set_status(ReminderDataHolder.reminderStatus.COMPLETED);
+                temp2.set_status(status);
                 historyList.add(temp2);
                 break;
         }

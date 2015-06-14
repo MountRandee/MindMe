@@ -76,13 +76,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int groupPosition) { return groupPosition; }
 
     // Removes the reminder from the list
-    public void removeGroup(int groupPosition, View parent)
+    public void removeGroup(int groupPosition, ReminderDataHolder.reminderStatus status, View parent)
     {
 
         if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.RECEIVED) {
-            SampleData.addToHistory(0,groupPosition);
+            SampleData.addToHistory(0, status, groupPosition);
         } else if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.SENT) {
-            SampleData.addToHistory(1, groupPosition);
+            SampleData.addToHistory(1, status, groupPosition);
         }
          _reminderList.remove(groupPosition);
 
@@ -160,13 +160,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGroup(groupPosition, parent);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
                     }
                 });
                 buttonDecline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGroup(groupPosition, parent);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
                     }
                 });
 
@@ -177,7 +177,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onClick (View v) {
 
-                        removeGroup(groupPosition, parent);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
                     }
                 });
             }
