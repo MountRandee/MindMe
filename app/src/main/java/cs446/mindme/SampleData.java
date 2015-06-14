@@ -57,26 +57,26 @@ public class SampleData {
     public static void populateSampleData()
     {
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
-                "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "You owe me $10", "Randy Cheung", "5:01 PM", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder r2 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
-                "Message2", "Emily Na", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Bring the forms", "Emily Na", "2d ago", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder r3 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
-                "Message3", "Arthur Jen", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "I need my t-shirt back", "Arthur Jen", "May 14", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder r4 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
-                "Message4", "Richard Fa", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Finish Proposal", "Richard Fa", "May 12", ReminderDataHolder.reminderStatus.ACTIVE);
         receivedList.add(r1);
         receivedList.add(r2);
         receivedList.add(r3);
         receivedList.add(r4);
 
         ReminderDataHolder s1 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Bring my umbrella", "Randy Cheung", "11:54 AM", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder s2 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message2", "Emily Na", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Don't forget watcard", "Emily Na", "1d ago", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder s3 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message3", "Arthur Jen", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Buy ski tickets", "Arthur Jen", "3d ago", ReminderDataHolder.reminderStatus.ACTIVE);
         ReminderDataHolder s4 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message4", "Richard Fa", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
+                "Pick up my laptop", "Richard Fa", "May 12", ReminderDataHolder.reminderStatus.ACTIVE);
         sentList.add(s1);
         sentList.add(s2);
         sentList.add(s3);
