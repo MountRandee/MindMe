@@ -1,4 +1,4 @@
-package cs446.mindme;
+package cs446.mindme.DataHolders;
 
 public class ReminderDataHolder {
 

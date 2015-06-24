@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cs446.mindme.R;
-import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -42,9 +42,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView textViewMessage = (TextView) convertView.findViewById(R.id.reminder_text);
         TextView textViewFrom = (TextView) convertView.findViewById(R.id.reminder_from_text);
         TextView textViewTime = (TextView) convertView.findViewById(R.id.reminder_timestamp);
-        String reminderMessage = (String) getGroup(groupPosition).getMessage();
-        String reminderFrom = (String) getGroup(groupPosition).getFrom();
-        String reminderTime = (String) getGroup(groupPosition).getTime();
+        String reminderMessage =  getGroup(groupPosition).getMessage();
+        String reminderFrom =  getGroup(groupPosition).getFrom();
+        String reminderTime = getGroup(groupPosition).getTime();
         textViewMessage.setText(reminderMessage);
         textViewFrom.setText(reminderFrom);
         textViewTime.setText(reminderTime);
