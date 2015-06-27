@@ -15,11 +15,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int index) {
         switch (index) {
             case 0:
-                return new cs446.mindme.Received.ViewReceived();
+                return new cs446.mindme.Views.ViewReceived();
             case 1:
-                return new cs446.mindme.Sent.ViewSent();
+                return new cs446.mindme.Views.ViewSent();
             case 2:
-                return new cs446.mindme.History.ViewHistory();
+                return new cs446.mindme.Views.ViewHistory();
         }
         return null;
     }

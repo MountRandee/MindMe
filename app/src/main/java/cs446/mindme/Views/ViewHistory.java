@@ -1,4 +1,4 @@
-package cs446.mindme.History;
+package cs446.mindme.Views;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +9,7 @@ import android.widget.ExpandableListView;
 import java.util.ArrayList;
 import cs446.mindme.Adapters.ExpandableListAdapter;
 import cs446.mindme.R;
-import cs446.mindme.ReminderDataHolder;
+import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
 
 public class ViewHistory extends Fragment {

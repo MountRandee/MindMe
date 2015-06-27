@@ -2,6 +2,8 @@ package cs446.mindme;
 
 import java.util.ArrayList;
 
+import cs446.mindme.DataHolders.ReminderDataHolder;
+
 public class SampleData {
 
     static ArrayList<ReminderDataHolder> receivedList = new ArrayList<ReminderDataHolder>();

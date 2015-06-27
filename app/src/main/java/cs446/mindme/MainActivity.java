@@ -10,6 +10,7 @@ import android.view.*;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
 import com.facebook.FacebookSdk;
+import cs446.mindme.DataHolders.ReminderDataHolder;
 
 public class MainActivity extends FragmentActivity {
 
