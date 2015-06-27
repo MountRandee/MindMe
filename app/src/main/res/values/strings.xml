@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My First App</string>
+    <string name="app_name">MindMe</string>
     <string name="edit_message">Enter message</string>
     <string name="button_send">Send</string>
     <string name="action_settings">Settings</string>
@@ -9,4 +9,5 @@
     <string name="title_activity_display_message">My Message</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="facebook_app_id">895278880509263</string>
 </resources>

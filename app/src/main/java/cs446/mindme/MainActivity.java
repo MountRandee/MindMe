@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.*;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
+import com.facebook.FacebookSdk;
 
 public class MainActivity extends FragmentActivity {
 
