@@ -13,7 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
-import com.facebook.FacebookSdk;
+// import com.facebook.FacebookSdk;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEvent;
 
