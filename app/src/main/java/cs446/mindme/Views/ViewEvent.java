@@ -126,7 +126,7 @@ public class ViewEvent extends Fragment {
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.ic_drawer, GravityCompat.START);
+        // mDrawerLayout.setDrawerShadow(R.drawable.ic_drawer, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
         android.app.ActionBar actionBar = getActionBar();
