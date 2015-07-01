@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
+import java.util.ArrayList;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
 // import com.facebook.FacebookSdk;
@@ -18,6 +19,9 @@ import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEvent;
 
 public class MainActivity extends FragmentActivity implements ViewEvent.NavigationDrawerCallbacks {
+
+    public static ArrayList<String> friendsName;
+    public static ArrayList<String> friendsId;
 
     ActionBar actionBar;
     TabsPagerAdapter tabsPagerAdapter;

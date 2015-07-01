@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,14 +29,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.*;
 
 /**
  * A login screen that offers login via email/password.
@@ -53,6 +64,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+
+    private AccessTokenTracker accessTokenTracker;
+
+    private ProfileTracker profileTracker;
 
     // UI references.
     //private AutoCompleteTextView mEmailView;
@@ -87,8 +102,33 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         callbackManager = CallbackManager.Factory.create();
 
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken accessToken, AccessToken accessToken1) {
+
+            }
+        };
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile profile, Profile profile1) {
+                Profile.setCurrentProfile(profile1);
+                setupProfile();
+            }
+        };
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+
+        if (Profile.getCurrentProfile() != null) {
+            setupProfile();
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         LoginButton mEmailSignInButton = (LoginButton) findViewById(R.id.login_button);
-        mEmailSignInButton.setReadPermissions("user_friends");
+        mEmailSignInButton.setReadPermissions(Arrays.asList("public_profile", "user_friends", "email", "read_custom_friendlists"));
         mEmailSignInButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -124,6 +164,57 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+    public void setupProfile(){
+        Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
+        Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        JSONObject obj = response.getJSONObject();
+                        JSONArray array = null;
+                        try {
+                            array = obj.getJSONArray("data");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (MainActivity.friendsName == null) {
+                            MainActivity.friendsName = new ArrayList<String>();
+                        } else if (!MainActivity.friendsName.isEmpty()) {
+                            MainActivity.friendsName.clear();
+                        }
+
+                        if (MainActivity.friendsId == null) {
+                            MainActivity.friendsId = new ArrayList<String>();
+                        } else if (!MainActivity.friendsId.isEmpty()) {
+                            MainActivity.friendsId.clear();
+                        }
+                        if (array != null) {
+                            for (int i=0;i<array.length();i++){
+                                try {
+                                    MainActivity.friendsId.add(array.getJSONObject(i).getString("id"));
+                                    MainActivity.friendsName.add(array.getJSONObject(i).getString("name"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+        ).executeAsync();
     }
 
 
