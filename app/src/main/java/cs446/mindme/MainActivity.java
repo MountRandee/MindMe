@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
 // import com.facebook.FacebookSdk;
@@ -25,10 +26,18 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
     public static class Friend {
         public String name;
         public String id;
+        public boolean isSelected = false;
 
         public Friend(String name, String id) {
             this.name = name;
             this.id = id;
+        }
+    }
+
+    public static void deselectAllFriends() {
+        Iterator<Friend> friendIterator = friends.iterator();
+        while (friendIterator.hasNext()) {
+            friendIterator.next().isSelected = false;
         }
     }
 
@@ -169,6 +178,7 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.new_reminder_icon) {
+            deselectAllFriends();
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
             return true;
