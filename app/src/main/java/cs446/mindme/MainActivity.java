@@ -20,8 +20,17 @@ import cs446.mindme.Views.ViewEvent;
 
 public class MainActivity extends FragmentActivity implements ViewEvent.NavigationDrawerCallbacks {
 
-    public static ArrayList<String> friendsName;
-    public static ArrayList<String> friendsId;
+    public static ArrayList<Friend> friends;
+
+    public static class Friend {
+        public String name;
+        public String id;
+
+        public Friend(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
+    }
 
     ActionBar actionBar;
     TabsPagerAdapter tabsPagerAdapter;
@@ -158,6 +167,10 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
 
         // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.new_reminder_icon) {
+            CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
+            dialog.show();
             return true;
         }
 

@@ -112,8 +112,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile profile, Profile profile1) {
-                Profile.setCurrentProfile(profile1);
-                setupProfile();
+                if (profile1 != null) {
+                    Profile.setCurrentProfile(profile1);
+                    setupProfile();
+                }
             }
         };
         accessTokenTracker.startTracking();
@@ -191,22 +193,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             e.printStackTrace();
                         }
 
-                        if (MainActivity.friendsName == null) {
-                            MainActivity.friendsName = new ArrayList<String>();
-                        } else if (!MainActivity.friendsName.isEmpty()) {
-                            MainActivity.friendsName.clear();
+                        if (MainActivity.friends == null) {
+                            MainActivity.friends = new ArrayList<MainActivity.Friend>();
+                        } else if (!MainActivity.friends.isEmpty()) {
+                            MainActivity.friends.clear();
                         }
 
-                        if (MainActivity.friendsId == null) {
-                            MainActivity.friendsId = new ArrayList<String>();
-                        } else if (!MainActivity.friendsId.isEmpty()) {
-                            MainActivity.friendsId.clear();
-                        }
                         if (array != null) {
                             for (int i=0;i<array.length();i++){
                                 try {
-                                    MainActivity.friendsId.add(array.getJSONObject(i).getString("id"));
-                                    MainActivity.friendsName.add(array.getJSONObject(i).getString("name"));
+                                    MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
+                                            array.getJSONObject(i).getString("id")));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
