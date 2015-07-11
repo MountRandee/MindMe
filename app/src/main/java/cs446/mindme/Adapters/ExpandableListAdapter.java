@@ -15,6 +15,8 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.ProfilePictureView;
+
 import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
@@ -43,11 +45,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView textViewFrom = (TextView) convertView.findViewById(R.id.reminder_from_text);
         TextView textViewTime = (TextView) convertView.findViewById(R.id.reminder_timestamp);
         String reminderMessage =  getGroup(groupPosition).getMessage();
-        String reminderFrom =  getGroup(groupPosition).getFrom();
+        String reminderFrom =  getGroup(groupPosition).getFrom().name;
         String reminderTime = getGroup(groupPosition).getTime();
         textViewMessage.setText(reminderMessage);
         textViewFrom.setText(reminderFrom);
         textViewTime.setText(reminderTime);
+        ProfilePictureView profilePictureView;
+        profilePictureView = (ProfilePictureView) convertView.findViewById(R.id.user_icon);
+        profilePictureView.setProfileId(getGroup(groupPosition).getFrom().id);
 
         // Only display the status if it's a HISTORY view, and
         // Only display the status if it's not ACTIVE, i.e. COMPLETED or DECLINED

@@ -204,6 +204,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                                 try {
                                     MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
                                             array.getJSONObject(i).getString("id")));
+                                    Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
