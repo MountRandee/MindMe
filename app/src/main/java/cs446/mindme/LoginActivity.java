@@ -121,14 +121,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        if (Profile.getCurrentProfile() != null) {
-            setupProfile();
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
-            return;
+        if (!ConnectionData.isNetworkAvailable(getApplicationContext())) {
+        } else {
+            if (Profile.getCurrentProfile() != null) {
+                setupProfile();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+                return;
+            }
         }
-
         LoginButton mEmailSignInButton = (LoginButton) findViewById(R.id.login_button);
         mEmailSignInButton.setReadPermissions(Arrays.asList("public_profile", "user_friends", "email", "read_custom_friendlists"));
         mEmailSignInButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

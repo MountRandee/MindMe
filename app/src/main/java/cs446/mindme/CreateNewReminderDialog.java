@@ -59,13 +59,6 @@ public class CreateNewReminderDialog extends Dialog implements
         }
 
         friendsCopy.addAll(MainActivity.friends);
-        for (int i = 0 ; i < 10 ; i++) {
-            Random rand = new Random();
-            int rand1 = rand.nextInt((50000 - 10000) + 1) + 10000;
-            int rand2 = rand.nextInt((99999 - 10000) + 1) + 10000;
-            int rand3 = rand.nextInt((99999 - 10000) + 1) + 10000;
-            friendsCopy.add(new MainActivity.Friend("Test Account " + i, "" + rand1 + rand2 + rand3));
-        }
 
         reminding = (TextView) findViewById(R.id.remindingText);
 
@@ -144,8 +137,12 @@ public class CreateNewReminderDialog extends Dialog implements
                 break;
             case R.id.sendnewreminder:
                 Date date = new Date();
+                if (message.isEmpty() || selectedFriend == null) {
+                    return;
+                }
                 SampleData.sentList.add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                         message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE));
+                SampleData.sortLists();
                 dismiss();
                 break;
             default:

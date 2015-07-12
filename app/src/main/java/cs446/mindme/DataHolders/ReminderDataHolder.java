@@ -6,7 +6,12 @@ import java.util.Date;
 
 import cs446.mindme.MainActivity;
 
-public class ReminderDataHolder {
+public class ReminderDataHolder implements Comparable<ReminderDataHolder> {
+
+    @Override
+    public int compareTo(ReminderDataHolder another) {
+        return another.getDate().after(_time) ? 1 : -1;
+    }
 
     public enum reminderType {
         RECEIVED, SENT, HISTORY
@@ -33,8 +38,12 @@ public class ReminderDataHolder {
     public reminderType getType() { return _type; }
     public String getMessage() { return _message; }
     public MainActivity.Friend getFrom() { return _from; }
+    public Date getDate() { return _time; }
     public String getTime () {
         DateFormat dateFormat = new SimpleDateFormat("MMM d");
+        if (dateFormat.format(_time).equals(dateFormat.format(new Date()))) {
+            dateFormat = new SimpleDateFormat("h:mm a");
+        }
         return dateFormat.format(_time);
     }
     public reminderStatus getStatus() { return _status; }
