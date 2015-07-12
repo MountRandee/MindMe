@@ -19,9 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import cs446.mindme.Adapters.FriendsAdapter;
+import cs446.mindme.DataHolders.ReminderDataHolder;
 
 /**
  * Created by richardfa on 15-07-10.
@@ -91,30 +93,14 @@ public class CreateNewReminderDialog extends Dialog implements
         cancel.setOnClickListener(this);
         send.setOnClickListener(this);
         final EditText editText = (EditText) findViewById(R.id.newReminderMessage);
-        editText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText.requestFocus();
-                editText.setFocusable(true);
-                editText.setFocusableInTouchMode(true);
-                editText.setSelected(true);
-                editText.setClickable(true);
-                Log.e("Edittext", editText.isEnabled() ? "Enabled" : "Disabled");
-                Log.e("Edittext", editText.isFocusable() ? "Focusable" : "Not Focusable");
-                Log.e("Edittext", editText.isFocused() ? "Focused" : "Not Focused");
-                Log.e("Edittext", editText.isInEditMode() ? "In Edit Mode" : "Not In Edit Mode");
-                Log.e("Edittext", editText.isSelected() ? "Selected" : "Unselected");
-            }
-        });
-        /*editText.addTextChangedListener(new TextWatcher() {
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e("test", "listened to change");
-                message = editText.getText().toString();
+                message = s.toString();
                 updateButton();
             }
 
@@ -122,7 +108,7 @@ public class CreateNewReminderDialog extends Dialog implements
             public void afterTextChanged(Editable s) {
 
             }
-        });*/
+        });
         updateReminding();
         updateButton();
     }
@@ -154,10 +140,12 @@ public class CreateNewReminderDialog extends Dialog implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cancelnewreminder:
-                //c.finish();
                 dismiss();
                 break;
             case R.id.sendnewreminder:
+                Date date = new Date();
+                SampleData.sentList.add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
+                        message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE));
                 dismiss();
                 break;
             default:
