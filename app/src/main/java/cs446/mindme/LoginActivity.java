@@ -86,7 +86,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         // Set up the login form.
         //mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+
+
+
+
+        //populateAutoComplete();
+
+
+
+
+
+
 
         /*mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -122,6 +132,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         profileTracker.startTracking();
 
         if (!ConnectionData.isNetworkAvailable(getApplicationContext())) {
+            if (ConnectionData.getSharedUserID(getApplicationContext()) != null) {
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
         } else {
             if (Profile.getCurrentProfile() != null) {
                 setupProfile();
@@ -180,6 +195,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     public void setupProfile(){
         Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
         Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
+        ConnectionData.setSharedUserID(getApplicationContext());
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/friends",
