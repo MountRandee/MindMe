@@ -113,8 +113,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             @Override
             protected void onCurrentProfileChanged(Profile profile, Profile profile1) {
                 if (profile1 != null) {
-                    Profile.setCurrentProfile(profile1);
-                    setupProfile();
+                    if (ConnectionData.isNetworkAvailable(getApplicationContext())) {
+                        Profile.setCurrentProfile(profile1);
+                        setupProfile();
+                    }
                 }
             }
         };

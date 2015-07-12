@@ -9,13 +9,18 @@ import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.Profile;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -95,7 +100,9 @@ public class ConnectionData {
         if (!SampleData.receivedList.isEmpty()) {
             SampleData.receivedList.clear();
         }
-        SampleData.receivedList.addAll(received);
+        if (received != null) {
+            SampleData.receivedList.addAll(received);
+        }
     }
 
     public static void applySharedSentReminders(Context context) {
@@ -109,7 +116,9 @@ public class ConnectionData {
         if (!SampleData.sentList.isEmpty()) {
             SampleData.sentList.clear();
         }
-        SampleData.sentList.addAll(sent);
+        if (sent != null) {
+            SampleData.sentList.addAll(sent);
+        }
     }
 
     public static void applySharedHistoryReminders(Context context) {
@@ -123,7 +132,9 @@ public class ConnectionData {
         if (!SampleData.historyList.isEmpty()) {
             SampleData.historyList.clear();
         }
-        SampleData.historyList.addAll(history);
+        if (history != null) {
+            SampleData.historyList.addAll(history);
+        }
     }
 
     public static String printKeyHash(Activity context) {
@@ -155,11 +166,28 @@ public class ConnectionData {
         return key;
     }
 
-    public static boolean isNetworkAvailable(Context context) {
+    public static boolean checkNetwork(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Log.e("Network", activeNetworkInfo != null && activeNetworkInfo.isConnected() ? "Active" : "Inactive");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        if (checkNetwork(context)) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     public static void showNoNetworkToast(Context context) {

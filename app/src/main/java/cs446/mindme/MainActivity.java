@@ -3,6 +3,7 @@ package cs446.mindme;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -22,6 +23,10 @@ import cs446.mindme.Views.ViewEvent;
 public class MainActivity extends FragmentActivity implements ViewEvent.NavigationDrawerCallbacks {
 
     public static ArrayList<Friend> friends;
+
+    private static Context context;
+
+    public static Context getContext() { return context; }
 
     public static class Friend {
         public String name;
@@ -47,6 +52,8 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (ViewEvent)
@@ -59,9 +66,9 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         // TODO: remove this
-        if (populateOnce == false) {
+        ConnectionData.applyAllSharedReminders(getApplicationContext());
+        if (SampleData.receivedList.isEmpty() && SampleData.sentList.isEmpty() && SampleData.historyList.isEmpty()) {
             SampleData.populateSampleData();
-            populateOnce = true;
         }
 
         actionBar = getActionBar();

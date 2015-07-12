@@ -143,6 +143,9 @@ public class CreateNewReminderDialog extends Dialog implements
                 SampleData.sentList.add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                         message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE));
                 SampleData.sortLists();
+                if (MainActivity.getContext() != null) {
+                    ConnectionData.saveAllSharedReminders(MainActivity.getContext());
+                }
                 dismiss();
                 break;
             default:
