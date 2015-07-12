@@ -34,12 +34,6 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         }
     }
 
-    public static void deselectAllFriends() {
-        Iterator<Friend> friendIterator = friends.iterator();
-        while (friendIterator.hasNext()) {
-            friendIterator.next().isSelected = false;
-        }
-    }
 
     ActionBar actionBar;
     TabsPagerAdapter tabsPagerAdapter;
@@ -178,7 +172,6 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.new_reminder_icon) {
-            deselectAllFriends();
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
             return true;
