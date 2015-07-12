@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:background="#FFFFFF"
     android:descendantFocusability="blocksDescendants"
-    tools:context="cs446.mindme.CreateNewReminderDialog">
+    tools:context="cs446.mindme.CreateNewReminderDialog"
+    android:focusable="true" android:focusableInTouchMode="true">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -30,8 +31,14 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/newReminderMessage"
+            android:textColor="#000000"
+            android:hint="Type a message..."
+            android:inputType="text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <requestFocus />
+        </EditText>
 
         <LinearLayout
             android:layout_alignParentBottom="true"
