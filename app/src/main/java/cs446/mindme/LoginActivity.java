@@ -86,17 +86,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         // Set up the login form.
         //mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
-
-
-
-        //populateAutoComplete();
-
-
-
-
-
-
+        populateAutoComplete();
 
         /*mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {

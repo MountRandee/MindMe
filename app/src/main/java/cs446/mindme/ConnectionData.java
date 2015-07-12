@@ -12,8 +12,8 @@ import android.util.Base64;
 import android.widget.Toast;
 
 import com.facebook.Profile;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
@@ -48,7 +48,7 @@ public class ConnectionData {
         return prefs.getString(SHARED_USER_ID, null);
     }
 
-    public static void saveAllSharedReminders(Context context) {
+    /*public static void saveAllSharedReminders(Context context) {
         saveSharedReceivedReminders(context);
         saveSharedSentReminders(context);
         saveSharedHistoryReminders(context);
@@ -124,7 +124,7 @@ public class ConnectionData {
             SampleData.historyList.clear();
         }
         SampleData.historyList.addAll(history);
-    }
+    }*/
 
     public static String printKeyHash(Activity context) {
         PackageInfo packageInfo;
