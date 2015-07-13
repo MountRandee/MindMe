@@ -12,9 +12,17 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -170,7 +178,6 @@ public class ConnectionData {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.e("Network", activeNetworkInfo != null && activeNetworkInfo.isConnected() ? "Active" : "Inactive");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -182,14 +189,17 @@ public class ConnectionData {
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(1500);
                 urlc.connect();
+                Log.e("Network", urlc.getResponseCode() == 200 ? "True" : "False");
                 return (urlc.getResponseCode() == 200);
             } catch (IOException e) {
-                //e.printStackTrace();
+                Log.e("Network", "False");
                 return false;
             } catch (Exception e) {
+                Log.e("Network", "False");
                 return false;
             }
         }
+        Log.e("Network", "False");
         return false;*/
         return true;
     }
@@ -201,6 +211,47 @@ public class ConnectionData {
             return false;
         }
         return true;
+    }
+
+    public static void setupProfile(Context context){
+        Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
+        Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
+        ConnectionData.setSharedUserID(context);
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        JSONObject obj = response.getJSONObject();
+                        JSONArray array = null;
+                        try {
+                            array = obj.getJSONArray("data");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (MainActivity.friends == null) {
+                            MainActivity.friends = new ArrayList<MainActivity.Friend>();
+                        } else if (!MainActivity.friends.isEmpty()) {
+                            MainActivity.friends.clear();
+                        }
+
+                        if (array != null) {
+                            for (int i=0;i<array.length();i++){
+                                try {
+                                    MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
+                                            array.getJSONObject(i).getString("id")));
+                                    Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+        ).executeAsync();
     }
 
     private ConnectionData() {

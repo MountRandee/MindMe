@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -115,7 +116,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 if (profile1 != null) {
                     if (ConnectionData.isNetworkAvailable(getApplicationContext())) {
                         Profile.setCurrentProfile(profile1);
-                        setupProfile();
+                        ConnectionData.setupProfile(getApplicationContext());
                     }
                 }
             }
@@ -131,7 +132,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         } else {
             if (Profile.getCurrentProfile() != null) {
-                setupProfile();
+                ConnectionData.setupProfile(getApplicationContext());
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(i);
                 finish();
@@ -182,47 +183,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         super.onStop();
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
-    }
-
-    public void setupProfile(){
-        Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
-        Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
-        ConnectionData.setSharedUserID(getApplicationContext());
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/me/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        JSONObject obj = response.getJSONObject();
-                        JSONArray array = null;
-                        try {
-                            array = obj.getJSONArray("data");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (MainActivity.friends == null) {
-                            MainActivity.friends = new ArrayList<MainActivity.Friend>();
-                        } else if (!MainActivity.friends.isEmpty()) {
-                            MainActivity.friends.clear();
-                        }
-
-                        if (array != null) {
-                            for (int i=0;i<array.length();i++){
-                                try {
-                                    MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
-                                            array.getJSONObject(i).getString("id")));
-                                    Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-        ).executeAsync();
     }
 
 

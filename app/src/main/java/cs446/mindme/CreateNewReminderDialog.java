@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.login.widget.LoginButton;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -33,12 +35,14 @@ public class CreateNewReminderDialog extends Dialog implements
 
     public Activity c;
     public Dialog d;
-    public Button cancel, send;
+    public Button cancel, send, refresh;
     public String message;
     public TextView reminding;
 
     public MainActivity.Friend selectedFriend;
     public ArrayList<MainActivity.Friend> friendsCopy;
+
+    FriendsAdapter adapter;
 
     public CreateNewReminderDialog(Activity a) {
         super(a);
@@ -63,7 +67,7 @@ public class CreateNewReminderDialog extends Dialog implements
 
         reminding = (TextView) findViewById(R.id.remindingText);
 
-        final FriendsAdapter adapter = new FriendsAdapter(c, friendsCopy);
+        adapter = new FriendsAdapter(c, friendsCopy);
         ListView friendsList = (ListView) findViewById(R.id.friendslist);
         friendsList.setAdapter(adapter);
         friendsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -84,8 +88,10 @@ public class CreateNewReminderDialog extends Dialog implements
         });
         cancel = (Button) findViewById(R.id.cancelnewreminder);
         send = (Button) findViewById(R.id.sendnewreminder);
+        refresh = (Button) findViewById(R.id.refreshFriendsButtonBtn);
         cancel.setOnClickListener(this);
         send.setOnClickListener(this);
+        refresh.setOnClickListener(this);
         final EditText editText = (EditText) findViewById(R.id.newReminderMessage);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -149,9 +155,14 @@ public class CreateNewReminderDialog extends Dialog implements
                 }
                 dismiss();
                 break;
+            case R.id.refreshFriendsButtonBtn:
+                ConnectionData.setupProfile(getContext());
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+                break;
             default:
                 break;
         }
-        dismiss();
     }
 }

@@ -15,10 +15,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:id="@+id/refreshFriendsButton"
+        android:layout_below="@+id/remindingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DADADA">
+        <Button
+            android:id="@+id/refreshFriendsButtonBtn"
+            style="@style/ReminderItemText"
+            android:text="Refresh"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/friendslist"
-        android:layout_below="@+id/remindingText"
+        android:layout_below="@+id/refreshFriendsButton"
         android:layout_above="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
