@@ -175,7 +175,7 @@ public class ConnectionData {
     }
 
     public static boolean isNetworkAvailable(Context context) {
-        if (checkNetwork(context)) {
+        /*if (checkNetwork(context)) {
             try {
                 HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
                 urlc.setRequestProperty("User-Agent", "Test");
@@ -184,18 +184,23 @@ public class ConnectionData {
                 urlc.connect();
                 return (urlc.getResponseCode() == 200);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                return false;
+            } catch (Exception e) {
+                return false;
             }
         }
-        return false;
+        return false;*/
+        return true;
     }
 
-    public static void showNoNetworkToast(Context context) {
-        CharSequence text = "Network Unavailable";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+    public static boolean checkNetworkAvailable(Context context) {
+        if (!isNetworkAvailable(context)) {
+            Toast toast = Toast.makeText(context, "Network Unavailable", Toast.LENGTH_SHORT);
+            toast.show();
+            return false;
+        }
+        return true;
     }
 
     private ConnectionData() {

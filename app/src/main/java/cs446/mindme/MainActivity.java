@@ -24,9 +24,9 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
 
     public static ArrayList<Friend> friends;
 
-    private static Context context;
+    private static MainActivity activity;
 
-    public static Context getContext() { return context; }
+    public static MainActivity getActivity() { return activity; }
 
     public static class Friend {
         public String name;
@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
 
-        context = getApplicationContext();
+        activity = this;
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (ViewEvent)

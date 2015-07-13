@@ -52,8 +52,8 @@ public class SampleData {
                 break;
         }
         sortLists();
-        if (MainActivity.getContext() != null) {
-            ConnectionData.saveAllSharedReminders(MainActivity.getContext());
+        if (MainActivity.getActivity() != null) {
+            ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
         }
     }
 
@@ -110,8 +110,8 @@ public class SampleData {
         sentList.add(s4);
 
         sortLists();
-        if (MainActivity.getContext() != null) {
-            ConnectionData.saveAllSharedReminders(MainActivity.getContext());
+        if (MainActivity.getActivity() != null) {
+            ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
         }
     }
 

@@ -57,8 +57,9 @@ public class CreateNewReminderDialog extends Dialog implements
         } else if (!friendsCopy.isEmpty()) {
             friendsCopy.clear();
         }
-
-        friendsCopy.addAll(MainActivity.friends);
+        if (MainActivity.friends != null) {
+            friendsCopy.addAll(MainActivity.friends);
+        }
 
         reminding = (TextView) findViewById(R.id.remindingText);
 
@@ -143,8 +144,8 @@ public class CreateNewReminderDialog extends Dialog implements
                 SampleData.sentList.add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
                         message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE));
                 SampleData.sortLists();
-                if (MainActivity.getContext() != null) {
-                    ConnectionData.saveAllSharedReminders(MainActivity.getContext());
+                if (MainActivity.getActivity() != null) {
+                    ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
                 }
                 dismiss();
                 break;
