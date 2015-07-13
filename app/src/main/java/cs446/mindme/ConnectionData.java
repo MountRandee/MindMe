@@ -249,6 +249,9 @@ public class ConnectionData {
                                 }
                             }
                         }
+                        if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
+                            CreateNewReminderDialog.dialog.completeRefreshList();
+                        }
                     }
                 }
         ).executeAsync();

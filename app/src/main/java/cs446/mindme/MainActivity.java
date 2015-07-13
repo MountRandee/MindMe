@@ -12,6 +12,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
+
+import com.facebook.FacebookActivity;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -181,6 +186,12 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         } else if (id == R.id.new_reminder_icon) {
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
+            return true;
+        } else if (id == R.id.logout_settings) {
+            LoginManager.getInstance().logOut();
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
             return true;
         }
 
