@@ -3,8 +3,6 @@ package cs446.mindme;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -18,18 +16,17 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
 // import com.facebook.FacebookSdk;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEvent;
+import cs446.mindme.Views.ViewSidePanelMenu;
 
-public class MainActivity extends FragmentActivity implements ViewEvent.NavigationDrawerCallbacks {
-
-    public static ArrayList<Friend> friends;
+public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.NavigationDrawerCallbacks {
 
     private static MainActivity activity;
+    public static ArrayList<Friend> friends;
 
     public static MainActivity getActivity() { return activity; }
 
@@ -44,13 +41,12 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         }
     }
 
-
     ActionBar actionBar;
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
     boolean populateOnce = false;
 
-    private ViewEvent mNavigationDrawerFragment;
+    private ViewSidePanelMenu mNavigationDrawerFragment;
     private CharSequence mTitle;
 
     @Override
@@ -61,7 +57,7 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         activity = this;
         setContentView(R.layout.activity_main);
 
-        mNavigationDrawerFragment = (ViewEvent)
+        mNavigationDrawerFragment = (ViewSidePanelMenu)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
@@ -121,7 +117,7 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, ViewEvent.newInstance(position + 1))
                 .commit();
     }
 
@@ -199,42 +195,7 @@ public class MainActivity extends FragmentActivity implements ViewEvent.Navigati
     }
 
 
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-    }
 }
 
 /** Called when the user clicks the Send button *//*
