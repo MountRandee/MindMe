@@ -2,6 +2,7 @@ package cs446.mindme;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
+
+import com.facebook.FacebookActivity;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+
 import java.util.ArrayList;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
@@ -221,6 +227,12 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         } else if (id == R.id.new_reminder_icon) {
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
+            return true;
+        } else if (id == R.id.logout_settings) {
+            LoginManager.getInstance().logOut();
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
             return true;
         }
 

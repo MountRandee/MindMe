@@ -33,6 +33,8 @@ import cs446.mindme.DataHolders.ReminderDataHolder;
 public class CreateNewReminderDialog extends Dialog implements
         android.view.View.OnClickListener {
 
+    public static CreateNewReminderDialog dialog = null;
+
     public Activity c;
     public Dialog d;
     public Button cancel, send, refresh;
@@ -53,6 +55,7 @@ public class CreateNewReminderDialog extends Dialog implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.create_new_reminder_dialog);
 
@@ -111,6 +114,7 @@ public class CreateNewReminderDialog extends Dialog implements
         });
         updateReminding();
         updateButton();
+        setRefreshButton(true);
     }
 
     public void updateReminding() {
@@ -136,6 +140,15 @@ public class CreateNewReminderDialog extends Dialog implements
         }
     }
 
+    public void setRefreshButton(boolean enabled) {
+        refresh.setEnabled(enabled);
+        if (enabled) {
+            refresh.setText("Refresh");
+        } else {
+            refresh.setText("Loading...");
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -157,12 +170,25 @@ public class CreateNewReminderDialog extends Dialog implements
                 break;
             case R.id.refreshFriendsButtonBtn:
                 ConnectionData.setupProfile(getContext());
-                if (adapter != null) {
-                    adapter.notifyDataSetChanged();
-                }
+                setRefreshButton(false);
                 break;
             default:
                 break;
         }
+    }
+
+    public void completeRefreshList() {
+        if (friendsCopy == null) {
+            friendsCopy = new ArrayList<MainActivity.Friend>();
+        } else if (!friendsCopy.isEmpty()) {
+            friendsCopy.clear();
+        }
+        if (MainActivity.friends != null) {
+            friendsCopy.addAll(MainActivity.friends);
+        }
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+        setRefreshButton(true);
     }
 }
