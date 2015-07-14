@@ -1,48 +1,56 @@
 package cs446.mindme.Views;
 
-import android.app.Activity;
-import android.os.Bundle;
+
+import android.app.ActionBar;
 import android.support.v4.app.Fragment;
+
+import android.os.Bundle;
+
 import android.view.LayoutInflater;
+
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+
 import android.view.ViewGroup;
 
-import cs446.mindme.MainActivity;
 import cs446.mindme.R;
 
 public class ViewEvent extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static ViewEvent newInstance(int sectionNumber) {
-        ViewEvent fragment = new ViewEvent();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public ViewEvent() {
-    }
-
+    private Menu mOptionsMenu;
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        View rootView = inflater.inflate(R.layout.test1, container, false);
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+
+        /*menuInflater.inflate(R.menu.menu_main, menu);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle("Event");*/
+
+
         return rootView;
+
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
+
+    /*public boolean onCreateOptionsMenu(Menu menu) {
+        mOptionsMenu = menu;
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle("Event");
+        super.onCreateOptionsMenu(mOptionsMenu, menuInflater);
+        return true;
+
+    }*/
+
 }

@@ -1,7 +1,6 @@
 package cs446.mindme;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,8 +14,10 @@ import java.util.ArrayList;
 import cs446.mindme.Adapters.TabsPagerAdapter;
 // import com.facebook.FacebookSdk;
 import cs446.mindme.DataHolders.ReminderDataHolder;
+import cs446.mindme.Views.ViewEmpty;
 import cs446.mindme.Views.ViewEvent;
 import cs446.mindme.Views.ViewSidePanelMenu;
+import cs446.mindme.Views.ViewMisc;
 
 public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.NavigationDrawerCallbacks {
 
@@ -62,6 +63,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         // TODO: remove this
+        SampleData.populateSampleData();
         ConnectionData.applyAllSharedReminders(getApplicationContext());
         if (SampleData.receivedList.isEmpty() && SampleData.sentList.isEmpty() && SampleData.historyList.isEmpty()) {
             SampleData.populateSampleData();
@@ -107,13 +109,52 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 .setTabListener(tabListener));
     }
 
+    public void testLoad() {
+
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, ViewEvent.newInstance(position + 1))
-                .commit();
+        switch(position) {
+            default:
+            case 0:
+
+                if (viewPager != null) {
+                    viewPager.setVisibility(View.VISIBLE);
+                    fragment = new ViewEmpty();
+                    fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+                    // viewPager.getRootView().setVisibility(View.VISIBLE);
+                }
+
+                break;
+            case 1:
+                fragment = new ViewEvent();
+
+
+                viewPager.setVisibility(View.INVISIBLE);;
+                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setTitle(mTitle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .commit();
+                break;
+            case 2:
+                fragment = new ViewMisc();
+                viewPager.setVisibility(View.INVISIBLE);;
+                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setTitle(mTitle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .commit();
+                break;
+        }
+
+
     }
 
     public void onSectionAttached(int number) {
@@ -148,6 +189,8 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         }
     }*/
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -157,6 +200,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
+
             getMenuInflater().inflate(R.menu.menu_main, menu);
             restoreActionBar();
             return true;
