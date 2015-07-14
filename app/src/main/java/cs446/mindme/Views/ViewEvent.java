@@ -26,19 +26,20 @@ public class ViewEvent extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.test1, container, false);
-        MenuInflater menuInflater = getActivity().getMenuInflater();
-
-        /*menuInflater.inflate(R.menu.menu_main, menu);
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle("Event");*/
-
-
+        setHasOptionsMenu(true);
         return rootView;
 
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        System.out.println("event menu");
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        getActivity().getActionBar().setTitle("Event");
+        return;
+    }
 
     /*public boolean onCreateOptionsMenu(Menu menu) {
         mOptionsMenu = menu;
