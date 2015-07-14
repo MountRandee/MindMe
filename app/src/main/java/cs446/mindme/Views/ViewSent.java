@@ -9,14 +9,14 @@ import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
 
-import cs446.mindme.Adapters.ExpandableListAdapter;
+import cs446.mindme.Adapters.ReminderListAdapter;
 import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
 
 public class ViewSent extends Fragment {
 
-    ExpandableListAdapter listAdapter;
+    ReminderListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
 
@@ -28,7 +28,7 @@ public class ViewSent extends Fragment {
 
         // prepareSampleData();
         reminderList = SampleData.getSentList();
-        listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
+        listAdapter = new ReminderListAdapter(rootView.getContext(), reminderList);
         expListView.setAdapter(listAdapter);
 
         // Must be false to enable child views

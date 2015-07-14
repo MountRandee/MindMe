@@ -21,12 +21,12 @@ import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ReminderListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ReminderDataHolder> _reminderList;
 
-    public ExpandableListAdapter(Context context, ArrayList<ReminderDataHolder> reminderList) {
+    public ReminderListAdapter(Context context, ArrayList<ReminderDataHolder> reminderList) {
         this._context = context;
         this._reminderList = reminderList;
     }

@@ -5,6 +5,9 @@ package cs446.mindme.DataHolders;
  */
 public class EventDataHolder {
 
+    ReminderDataHolder.reminderStatus reminderStatus;
+    ReminderDataHolder.reminderType reminderType;
+
 
 }
 

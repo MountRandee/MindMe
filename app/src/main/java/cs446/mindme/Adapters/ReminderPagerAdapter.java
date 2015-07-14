@@ -5,9 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-public class TabsPagerAdapter extends FragmentPagerAdapter {
+public class ReminderPagerAdapter extends FragmentPagerAdapter {
 
-    public TabsPagerAdapter(FragmentManager fm) {
+    public ReminderPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

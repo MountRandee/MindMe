@@ -12,16 +12,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookActivity;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cs446.mindme.Adapters.TabsPagerAdapter;
+import cs446.mindme.Adapters.ReminderPagerAdapter;
 // import com.facebook.FacebookSdk;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEmpty;
@@ -48,7 +45,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     }
 
     ActionBar actionBar;
-    TabsPagerAdapter tabsPagerAdapter;
+    ReminderPagerAdapter reminderPagerAdapter;
     ViewPager viewPager;
     boolean populateOnce = false;
 
@@ -96,7 +93,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         }
 
         actionBar = getActionBar();
-        tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+        reminderPagerAdapter = new ReminderPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOnPageChangeListener(
             new ViewPager.SimpleOnPageChangeListener() {
@@ -108,7 +105,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 }
             }
         );
-        viewPager.setAdapter(tabsPagerAdapter);
+        viewPager.setAdapter(reminderPagerAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create a tab listener that is called when the user changes tabs.
@@ -135,10 +132,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 .setTabListener(tabListener));
     }
 
-    public void testLoad() {
-
-    }
-
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -147,7 +140,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         switch(position) {
             default:
             case 0:
-
                 if (viewPager != null) {
                     viewPager.setVisibility(View.VISIBLE);
                     fragment = new ViewEmpty();
@@ -158,8 +150,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 break;
             case 1:
                 fragment = new ViewEvent();
-
-
                 viewPager.setVisibility(View.INVISIBLE);;
                 actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 actionBar.setDisplayShowTitleEnabled(true);

@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import java.util.ArrayList;
-import cs446.mindme.Adapters.ExpandableListAdapter;
+import cs446.mindme.Adapters.ReminderListAdapter;
 import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
 
 public class ViewHistory extends Fragment {
 
-    ExpandableListAdapter listAdapter;
+    ReminderListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
 
@@ -27,7 +27,7 @@ public class ViewHistory extends Fragment {
 
         // prepareSampleData();
         reminderList = SampleData.getHistoryList();
-        listAdapter = new ExpandableListAdapter(rootView.getContext(), reminderList);
+        listAdapter = new ReminderListAdapter(rootView.getContext(), reminderList);
         expListView.setAdapter(listAdapter);
 
         // TODO: Temporarily true to disable actions for the reminders in HISTORY

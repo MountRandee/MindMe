@@ -25,7 +25,7 @@ public class ViewEvent extends Fragment {
 
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.test1, container, false);
+        View rootView = inflater.inflate(R.layout.view_events, container, false);
         setHasOptionsMenu(true);
         return rootView;
 
