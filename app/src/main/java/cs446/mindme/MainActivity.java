@@ -9,13 +9,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.*;
 
+import com.facebook.AccessToken;
 import com.facebook.FacebookActivity;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cs446.mindme.Adapters.TabsPagerAdapter;
 // import com.facebook.FacebookSdk;
@@ -48,6 +52,9 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     ViewPager viewPager;
     boolean populateOnce = false;
 
+    Timer timer;
+    TimerTask timerTask;
+
     private ViewSidePanelMenu mNavigationDrawerFragment;
     private CharSequence mTitle;
 
@@ -57,6 +64,19 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         super.onCreate(savedInstanceState);
 
         activity = this;
+        if(timer != null){
+            timer.cancel();
+        }
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.e("TimerTask", "running");
+                ConnectionData.updateAction();
+            }
+        };
+        timer.schedule(timerTask, 5000);
+
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (ViewSidePanelMenu)
@@ -239,7 +259,14 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timer != null){
+            timer.cancel();
+            timer = null;
+        }
+    }
 
 }
 

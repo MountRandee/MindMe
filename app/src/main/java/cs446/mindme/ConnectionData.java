@@ -201,7 +201,18 @@ public class ConnectionData {
         }
         Log.e("Network", "False");
         return false;*/
+        ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+        if (netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()) {
+            /*
+             * Toast.makeText(getActivity(), "No Internet connection!",
+             * Toast.LENGTH_LONG).show();
+             */
+            return false;
+        }
         return true;
+        //return true;
     }
 
     public static boolean checkNetworkAvailable(Context context) {
@@ -213,9 +224,22 @@ public class ConnectionData {
         return true;
     }
 
+    public static void updateAction() {
+        if (MainActivity.getActivity() == null) {
+            return;
+        }
+        if (!isNetworkAvailable(MainActivity.getActivity())) {
+            Toast toast = Toast.makeText(MainActivity.getActivity(), "Network Unavailable", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
     public static void setupProfile(Context context){
-        Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
-        Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
+        if (!isNetworkAvailable(context)) {
+            return;
+        }
+        //Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
+        //Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
         ConnectionData.setSharedUserID(context);
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -243,7 +267,7 @@ public class ConnectionData {
                                 try {
                                     MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
                                             array.getJSONObject(i).getString("id")));
-                                    Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
+                                    //Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -256,6 +280,9 @@ public class ConnectionData {
                 }
         ).executeAsync();
     }
+
+
+
 
     private ConnectionData() {
     }
