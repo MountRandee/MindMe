@@ -1,57 +1,126 @@
 package cs446.mindme.Views;
 
-
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
-
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import cs446.mindme.Adapters.EventsAdapter;
+import cs446.mindme.DataHolders.EventDataHolder;
+import cs446.mindme.DataRequest.EventRequest;
 import cs446.mindme.R;
 
 public class ViewEvent extends Fragment {
 
-    private Menu mOptionsMenu;
+    EventsAdapter listAdapter;
+    ExpandableListView expListView;
+    ArrayList<EventDataHolder> eventList;
+
     @Override
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.view_events, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("Creating Events Fragment!");
+        final View rootView = inflater.inflate(R.layout.view_events, container, false);
+        expListView = (ExpandableListView) rootView.findViewById(R.id.event_list);
         setHasOptionsMenu(true);
-        return rootView;
 
+        // Prepare the data
+        String jsonAddress = EventRequest.buildAddress(null, null);
+        eventList = new ArrayList<EventDataHolder>();
+        EventRequest eventConnection = new EventRequest();
+        String responseString = "";
+        try {
+            System.out.println("getting response string ...");
+            responseString = eventConnection.execute(jsonAddress).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        System.out.println(responseString);
+        // eventList = EventRequest.parseJSON(EventRequest.getJSON(jsonAddress));
+        listAdapter = new EventsAdapter(rootView.getContext(), eventList);
+        expListView.setAdapter(listAdapter);
+
+        // Must be false to enable child views
+        // TODO: Figure out why???
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return false;
+            }
+        });
+
+        // When event expanded, collapse the previous expanded event
+        // TODO: Remove toast later
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int prevPosition = -1;
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                /*Toast.makeText(rootView.getContext().getApplicationContext(),
+                        reminderList.get(groupPosition).getMessage()
+                                + " Expanded:" + groupPosition
+                                + " Prev:" + prevPosition,
+                        Toast.LENGTH_SHORT).show();*/
+                if (prevPosition != groupPosition) {
+                   /* Toast.makeText(rootView.getContext().getApplicationContext(),
+                            reminderList.get(groupPosition).getMessage()
+                                    *//*+ " prevCount:" + prevCount*//*
+                                    + " currCount:" + listAdapter.getGroupCount(),
+                            Toast.LENGTH_SHORT).show();*/
+                    // This may be executed even if position doesn't exit.
+                    // Initially didn't work when removing reminders, had to compare with list count.
+                    // TODO: Why?
+                    expListView.collapseGroup(prevPosition);
+                }
+                prevPosition = groupPosition;
+            }
+        });
+
+        // TODO: Remove if not needed
+        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+               /* Toast.makeText(rootView.getContext().getApplicationContext(),
+                        reminderList.get(groupPosition).getMessage() + " Collapsed",
+                        Toast.LENGTH_SHORT).show();*/
+            }
+        });
+
+        // Note: Event actions are implemented in the adapter.
+        // TODO: Remove if unnecessary.
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                return true;
+            }
+        });
+
+        return rootView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (listAdapter != null && this.isVisible()) {
+            listAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        System.out.println("event menu");
+        System.out.println("Creating events menu.");
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().getActionBar().setTitle("Event");
+        getActivity().getActionBar().setTitle("uWaterloo Events");
         return;
     }
-
-    /*public boolean onCreateOptionsMenu(Menu menu) {
-        mOptionsMenu = menu;
-        MenuInflater menuInflater = getActivity().getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main, menu);
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle("Event");
-        super.onCreateOptionsMenu(mOptionsMenu, menuInflater);
-        return true;
-
-    }*/
-
 }

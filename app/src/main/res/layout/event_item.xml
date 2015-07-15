@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seminar - \u201cControlling Microstructure: From the Synthesis of Novel Smart Polymers to the Crystal Engineering of Phthalocyanines for use in Organic Electronics\u201d by Beno\u00eet H. Lessard, PhD, NSERC Banting Post Doctoral Fellow, University of Toronto"
+        android:id="@+id/text_event_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/text_event_date" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="July 20"
+        android:id="@+id/text_event_date"
+        android:layout_below="@+id/text_event_title"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
