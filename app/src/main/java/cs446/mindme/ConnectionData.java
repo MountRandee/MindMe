@@ -1,7 +1,11 @@
 package cs446.mindme;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -281,6 +285,24 @@ public class ConnectionData {
         ).executeAsync();
     }
 
+    public static void showNotification(String eventtext, Context ctx) {
+        // Set the icon, scrolling text and timestamp
+        Notification notification = new Notification(R.drawable.login_logo,
+                eventtext, System.currentTimeMillis());
+
+        // The PendingIntent to launch our activity if the user selects this
+        // notification
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
+                new Intent(ctx, MainActivity.class), 0);
+
+        // Set the info for the views that show in the notification panel.
+        notification.setLatestEventInfo(ctx, "MindMe: ", eventtext,
+                contentIntent);
+
+        // Send the notification.
+        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify("Title", 0, notification);
+    }
 
 
 

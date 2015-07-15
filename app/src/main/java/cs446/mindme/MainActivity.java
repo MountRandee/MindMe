@@ -252,10 +252,10 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (timer != null){
+        /*if (timer != null){
             timer.cancel();
             timer = null;
-        }
+        }*/
     }
 
 }
