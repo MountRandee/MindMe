@@ -51,7 +51,7 @@ public class EventDataHolder {
     public void setReminderStatus(ReminderDataHolder.reminderStatus status) {
         this._reminderStatus = status;
     }
-    public void set_reminderType(ReminderDataHolder.reminderType type) {
+    public void setReminderType(ReminderDataHolder.reminderType type) {
         this._reminderType = type;
     }
 
