@@ -2,10 +2,6 @@ package cs446.mindme.DataRequest;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import com.google.gson.JsonObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cs446.mindme.DataHolders.EventDataHolder;
-import cs446.mindme.DataHolders.ReminderDataHolder;
 
 public class EventRequest extends AsyncTask<String, Void, ArrayList<EventDataHolder>> {
 
@@ -74,45 +69,39 @@ public class EventRequest extends AsyncTask<String, Void, ArrayList<EventDataHol
                 JSONObject responseObject = new JSONObject(responseString);
                 JSONArray dataArray = responseObject.getJSONArray(keyData);
 
-                if (dataArray.length() == 0)  {
-                    System.out.println("dataArray length 0");
-                } else {
-                    System.out.println("dataArray length " + dataArray.length());
-                }
+                System.out.println("dataArray length:" + dataArray.length());
 
                 for (int i = 0; i < dataArray.length(); i++) {
+                    System.out.println("dataArray:" + i);
                     JSONObject eventObject = dataArray.getJSONObject(i);
-                    System.out.println(eventObject.toString());
+                    // System.out.println(eventObject.toString());
 
-                    // get the times
-                    // JSONArray timesArray = eventObject.getJSONArray(keyTimes);
-                    JSONArray timesArray = eventObject.optJSONArray(keyTimes);
-                    List<String> times = new ArrayList<String>();
-                    for (int j = 0; j < timesArray.length(); i++) {
-                        times.add(timesArray.getString(i));
+                    // parse the times
+                    JSONArray timesArray = eventObject.getJSONArray(keyTimes);
+                    List<String> startTimes = new ArrayList<String>();
+                    List<String> endTimes = new ArrayList<String>();
+                    for (int j = 0; j < timesArray.length(); j++) {
+                        startTimes.add(timesArray.getJSONObject(j).getString("start"));
+                        endTimes.add(timesArray.getJSONObject(j).getString("end"));
                     }
 
-                    // get the types
-                    JSONArray typesArray = eventObject.optJSONArray(keyType);
-                    List<String> types = new ArrayList<String>();
-                    for (int j = 0; j < typesArray.length(); j++) {
-                        types.add(typesArray.getString(i));
-                    }
-
+                    // TODO: Get the description from another response
                     String description = "";
+                    // TODO: parse the date
+                    List<Date> dates = new ArrayList<Date>();
 
-                    Date rDate = null;
                     System.out.println(eventObject.getString(keyTitle));
+
                     EventDataHolder eventHolder = new EventDataHolder(
                             Integer.parseInt(eventObject.getString(keyEventID)),
-                            eventObject.getString(keyTitle),
                             eventObject.getString(keySite),
-                            rDate,
-                            times,
-                            description,
-                            eventObject.getString(keyLink),
                             eventObject.getString(keySiteName),
-                            types
+                            eventObject.getString(keyTitle),
+                            dates,
+                            startTimes,
+                            endTimes,
+                            eventObject.getString(keyLink),
+                            description
                     );
                     eventList.add(eventHolder);
                 }
@@ -128,7 +117,6 @@ public class EventRequest extends AsyncTask<String, Void, ArrayList<EventDataHol
         }
         return eventList;
     }
-
 
     private static String readStream(InputStream in) {
         BufferedReader reader = null;
