@@ -34,16 +34,22 @@ public class ViewEvent extends Fragment {
         String jsonAddress = EventRequest.buildAddress(null, null);
         eventList = new ArrayList<EventDataHolder>();
         EventRequest eventConnection = new EventRequest();
-        String responseString = "";
         try {
             System.out.println("getting response string ...");
-            responseString = eventConnection.execute(jsonAddress).get();
+            eventList = eventConnection.execute(jsonAddress).get();
+            if (eventList.size() != 0) {
+                for (int i = 0; i < eventList.size(); i++) {
+                    System.out.println(eventList.get(i).get_title());
+                }
+            } else {
+                System.out.println("eventList has size 0");
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        System.out.println(responseString);
+        // System.out.println(responseString);
         // eventList = EventRequest.parseJSON(EventRequest.getJSON(jsonAddress));
         listAdapter = new EventsAdapter(rootView.getContext(), eventList);
         expListView.setAdapter(listAdapter);
