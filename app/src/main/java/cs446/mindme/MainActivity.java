@@ -68,11 +68,12 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                Log.e("TimerTask", "running");
                 ConnectionData.updateAction();
             }
         };
-        timer.schedule(timerTask, 5000);
+        timer.schedule(timerTask, 10000, 10000);
+
+        startService(new Intent(this, WidgetService.class));
 
         setContentView(R.layout.activity_main);
 
@@ -130,6 +131,14 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(ReminderDataHolder.reminderType.HISTORY.toString())
                 .setTabListener(tabListener));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (WidgetService.getWidgetService() != null) {
+            WidgetService.getWidgetService().toggleVisibility(false);
+        }
     }
 
     @Override
