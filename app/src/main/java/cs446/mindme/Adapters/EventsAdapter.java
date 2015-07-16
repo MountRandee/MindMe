@@ -9,7 +9,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 import cs446.mindme.DataHolders.EventDataHolder;
+import cs446.mindme.DataHolders.EventDetailsDataHolder;
+import cs446.mindme.DataRequest.EventRequest;
 import cs446.mindme.R;
 
 public class EventsAdapter extends BaseExpandableListAdapter {
@@ -67,13 +71,22 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         buttonInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EventDetailsDataHolder eventDetails = new EventDetailsDataHolder();
+                String jsonAddress = EventRequest.buildAddress(getGroup(groupPosition).get_site(), getGroup(groupPosition).get_id());
+                EventRequest eventConnection = new EventRequest();
+                try {
+                    String responseString = eventConnection.execute(jsonAddress).get();
+                    eventDetails = eventConnection.buildEventInfo(responseString);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(_context);
-                dialogBuilder.setMessage(getGroup(groupPosition).get_description());
+                dialogBuilder.setMessage(eventDetails.get_description());
                 dialogBuilder.setTitle(getGroup(groupPosition).get_title());
                 // final TextView dialogText = new TextView(_context);
                 dialogBuilder.show();
-
-
             }
         });
 
@@ -94,7 +107,6 @@ public class EventsAdapter extends BaseExpandableListAdapter {
 
             }
         });
-
 
         return convertView;
     }

@@ -31,12 +31,13 @@ public class ViewEvent extends Fragment {
         setHasOptionsMenu(true);
 
         // Prepare the data
-        String jsonAddress = EventRequest.buildAddress(null, null);
+        String jsonAddress = EventRequest.buildAddress(null, -1);
         eventList = new ArrayList<EventDataHolder>();
         EventRequest eventConnection = new EventRequest();
         try {
             System.out.println("getting response string ...");
-            eventList = eventConnection.execute(jsonAddress).get();
+            String responseString = eventConnection.execute(jsonAddress).get();
+            eventList = eventConnection.buildEventList(responseString);
             if (eventList.size() != 0) {
                 for (int i = 0; i < eventList.size(); i++) {
                     System.out.println(eventList.get(i).get_title());
