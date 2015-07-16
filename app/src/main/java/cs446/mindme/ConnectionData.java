@@ -1,6 +1,7 @@
 package cs446.mindme;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,6 +37,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 import cs446.mindme.DataHolders.ReminderDataHolder;
 
@@ -236,6 +238,7 @@ public class ConnectionData {
             Toast toast = Toast.makeText(MainActivity.getActivity(), "Network Unavailable", Toast.LENGTH_SHORT);
             toast.show();
         }
+        //ConnectionData.showNotification("Message", MainActivity.getActivity());
     }
 
     public static void setupProfile(Context context){
@@ -285,26 +288,51 @@ public class ConnectionData {
         ).executeAsync();
     }
 
-    public static void showNotification(String eventtext, Context ctx) {
+    public static void showNotification(String eventtext, Context context) {
         // Set the icon, scrolling text and timestamp
+
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.login_logo,
                 eventtext, System.currentTimeMillis());
 
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         // The PendingIntent to launch our activity if the user selects this
         // notification
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                new Intent(ctx, MainActivity.class), 0);
+        PendingIntent intent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
 
         // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(ctx, "MindMe: ", eventtext,
-                contentIntent);
+        notification.setLatestEventInfo(context, "MindMe ", eventtext,
+                intent);
+
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Send the notification.
-        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify("Title", 0, notification);
+        notificationManager.notify("MindMe", 0, notification);
+
+        if (!isAppOpen(context)) {
+            WidgetService.getWidgetService().incrementNumber();
+        }
     }
 
+    public static boolean isAppOpen(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> services = activityManager
+                .getRunningTasks(Integer.MAX_VALUE);
+        boolean isActivityFound = false;
 
+        if (services.get(0).topActivity.getPackageName().toString()
+                .equalsIgnoreCase(context.getPackageName().toString())) {
+            isActivityFound = true;
+        }
+
+        return isActivityFound;
+    }
 
     private ConnectionData() {
     }
