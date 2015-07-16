@@ -1,5 +1,6 @@
 package cs446.mindme;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -69,6 +70,8 @@ public class WidgetService extends Service {
                         initialTouchY = event.getRawY();
                         return true;
                     case MotionEvent.ACTION_UP:
+                        if (Math.abs(params.x - initialX) < 5 && Math.abs(params.y - initialY) < 5) {
+                        }
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);

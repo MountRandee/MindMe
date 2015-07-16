@@ -2,7 +2,9 @@ package cs446.mindme;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -12,9 +14,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 
+import com.facebook.AccessToken;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +60,15 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             this.name = name;
             this.id = id;
         }
+
+        public static Friend getFriend(String id) {
+            for (Friend friend : friends) {
+                if (id.equals(friend.id)) {
+                    return friend;
+                }
+            }
+            return new Friend("Unknown", id);
+        }
     }
 
     ActionBar actionBar;
@@ -59,6 +86,111 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        SharedPreferences prefs = getSharedPreferences(ConnectionData.MINDME_SHARED_PREF, Context.MODE_PRIVATE);
+        String sharedGCM = prefs.getString(ConnectionData.SHARED_GCM_ID, "");
+
+        if (sharedGCM.isEmpty()) {
+            if (ConnectionData.gcm == null) {
+                ConnectionData.gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+            }
+            InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
+            //instanceID.deleteInstanceID ();
+
+            try {
+                ConnectionData.regid = instanceID.getToken(ConnectionData.PROJECT_NUMBER,
+                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ConnectionData.msg = "Device registered, registration ID=" + ConnectionData.regid;
+            Log.i("GCM", ConnectionData.msg);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(ConnectionData.SHARED_GCM_ID, ConnectionData.regid);
+            editor.apply();
+        }
+
+
+        String sharedToken = prefs.getString(ConnectionData.SHARED_TOKEN, "");
+        String sharedFB = prefs.getString(ConnectionData.SHARED_FB_ID, "");
+
+        if (sharedToken.isEmpty() || !sharedToken.equals(AccessToken.getCurrentAccessToken().getToken())
+                || sharedFB.isEmpty() || !sharedFB.equals(AccessToken.getCurrentAccessToken().getUserId())) {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("/api/v1/user/login/");
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                nameValuePairs.add(new BasicNameValuePair("token",
+                        AccessToken.getCurrentAccessToken().getToken()));
+                nameValuePairs.add(new BasicNameValuePair("expiration",
+                        AccessToken.getCurrentAccessToken().getExpires().toString()));
+                nameValuePairs.add(new BasicNameValuePair("fb_id",
+                        AccessToken.getCurrentAccessToken().getUserId()));
+                nameValuePairs.add(new BasicNameValuePair("gcm_id",
+                        ConnectionData.regid));
+                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                HttpResponse response = client.execute(post);
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(ConnectionData.SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
+                editor.putString(ConnectionData.SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
+                editor.apply();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         activity = this;
         if(timer != null){

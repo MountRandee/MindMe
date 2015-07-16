@@ -22,6 +22,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,6 +54,16 @@ public class ConnectionData {
     public static String SHARED_RECEIVED_REMINDERS = "sharedreceivedreminders";
     public static String SHARED_SENT_REMINDERS = "sharedsentreminders";
     public static String SHARED_HISTORY_REMINDERS = "sharedhistoryreminders";
+
+    //gcm
+    public static GoogleCloudMessaging gcm;
+    public static String PROJECT_NUMBER = "936075907537";
+    public static String regid;
+    public static String msg;
+
+    public static String SHARED_GCM_ID = "sharedGCMID";
+    public static String SHARED_FB_ID = "sharedFBID";
+    public static String SHARED_TOKEN = "sharedToken";
 
     public static void setSharedUserID(Context context) {
         SharedPreferences.Editor editor = context.getSharedPreferences(MINDME_SHARED_PREF, Context.MODE_PRIVATE).edit();
@@ -293,7 +304,7 @@ public class ConnectionData {
 
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.login_logo,
+        Notification notification = new Notification(R.drawable.widget,
                 eventtext, System.currentTimeMillis());
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
