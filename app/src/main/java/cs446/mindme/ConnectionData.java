@@ -1,6 +1,5 @@
 package cs446.mindme;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,12 +7,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Base64;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,12 +37,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,9 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
 
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewHistory;
@@ -83,19 +71,25 @@ public class ConnectionData {
     public static GoogleCloudMessaging gcm;
     public static String PROJECT_NUMBER = "936075907537";
     public static String regid;
-    public static String msg;
 
     public static String SHARED_GCM_ID = "sharedGCMID";
     public static String SHARED_FB_ID = "sharedFBID";
     public static String SHARED_TOKEN = "sharedToken";
 
+    public static boolean isLoadingReminders = false;
+
     public static void loadReminders() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (isLoadingReminders) {
+                    return;
+                }
+                isLoadingReminders = true;
+                Log.e("loadReminders", "loading");
                 try {
                     HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/3/");
+                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/" + "4" + "/");
                     HttpResponse response = client.execute(request);
 
                     // Get the response
@@ -117,27 +111,47 @@ public class ConnectionData {
                     JSONArray receivedMsgs = obj.getJSONObject("result").getJSONArray("received_messages");
                     JSONArray sentMsgs = obj.getJSONObject("result").getJSONArray("sent_messages");
                     for (int i = 0 ; i < receivedMsgs.length() ; i++) {
+                        Log.e("receivedMsgs", receivedMsgs.getJSONObject(i).toString());
+                        String status = receivedMsgs.getJSONObject(i).getString("status");
                         String id = receivedMsgs.getJSONObject(i).getString("id");
                         String message = receivedMsgs.getJSONObject(i).getString("message");
                         MainActivity.Friend from = MainActivity.Friend.getFriend(receivedMsgs.getJSONObject(i).getString("from"));
                         String last_modified_date = receivedMsgs.getJSONObject(i).getString("last_modified_date");
                         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                         Date date = format.parse(last_modified_date);
-                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, from, date, ReminderDataHolder.reminderStatus.ACTIVE, id);
-                        if (!SampleData.getReceivedList().contains(reminder)) {
-                            SampleData.getReceivedList().add(reminder);
+                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, from, date, ReminderDataHolder.stringToStatus(status), id);
+                        if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
+                            reminder.set_type(ReminderDataHolder.reminderType.RECEIVED);
+                            if (!SampleData.getReceivedList().contains(reminder)) {
+                                SampleData.getReceivedList().add(reminder);
+                            }
+                        } else {
+                            reminder.set_type(ReminderDataHolder.reminderType.HISTORY);
+                            if (!SampleData.getHistoryList().contains(reminder)) {
+                                SampleData.getHistoryList().add(reminder);
+                            }
                         }
                     }
                     for (int i = 0 ; i < sentMsgs.length() ; i++) {
+                        Log.e("sentMsgs", sentMsgs.getJSONObject(i).toString());
+                        String status = sentMsgs.getJSONObject(i).getString("status");
                         String message = sentMsgs.getJSONObject(i).getString("message");
                         MainActivity.Friend to = MainActivity.Friend.getFriend(sentMsgs.getJSONObject(i).getString("to"));
                         String last_modified_date = sentMsgs.getJSONObject(i).getString("last_modified_date");
                         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                         Date date = format.parse(last_modified_date);
                         String id = sentMsgs.getJSONObject(i).getString("id");
-                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, to, date, ReminderDataHolder.reminderStatus.ACTIVE, id);
-                        if (!SampleData.getSentList().contains(reminder)) {
-                            SampleData.getSentList().add(reminder);
+                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, to, date, ReminderDataHolder.stringToStatus(status), id);
+                        if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
+                            reminder.set_type(ReminderDataHolder.reminderType.SENT);
+                            if (!SampleData.getSentList().contains(reminder)) {
+                                SampleData.getSentList().add(reminder);
+                            }
+                        } else {
+                            reminder.set_type(ReminderDataHolder.reminderType.HISTORY);
+                            if (!SampleData.getHistoryList().contains(reminder)) {
+                                SampleData.getHistoryList().add(reminder);
+                            }
                         }
                     }
                     SampleData.sortLists();
@@ -150,14 +164,19 @@ public class ConnectionData {
                     if (ViewHistory.getViewHistory() != null) {
                         ViewHistory.getViewHistory().notifyDataSetChanged();
                     }
+                    isLoadingReminders = false;
+                    Log.e("loadReminders", "loaded");
                     if (MainActivity.getActivity() != null) {
-                        ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
+                        //saveAllSharedReminders(MainActivity.getActivity());
                     }
                 } catch (IOException e) {
+                    isLoadingReminders = false;
                     Log.e("loadReminders", "IOException: " + e);
                 } catch (JSONException e) {
+                    isLoadingReminders = false;
                     Log.e("loadReminders", "JSONException: " + e);
                 } catch (ParseException e) {
+                    isLoadingReminders = false;
                     Log.e("loadReminders", "ParseException: " + e);
                 }
             }
@@ -174,7 +193,7 @@ public class ConnectionData {
                     for (HashMap.Entry<String, String>param : params.entrySet()) {
                         appendParams.append("&" + param.getKey() + "=" + URLEncoder.encode(param.getValue()));
                     }
-                    String url = ConnectionData.DOMAIN + appendURL + "?" + appendParams.toString().substring(1);
+                    String url = DOMAIN + appendURL + "?" + appendParams.toString().substring(1);
                     Log.e("post", "URL: " + url);
                     HttpPost post = new HttpPost(url);
                     HttpClient client = new DefaultHttpClient();
@@ -187,7 +206,7 @@ public class ConnectionData {
                     }
                     Log.e("post", "response entity: " + responseEntity.toString());
                     if (shouldReloadReminders) {
-                        ConnectionData.loadReminders();
+                        loadReminders();
                     }
                 } catch (IOException e) {
                     Log.e("post", "IOException: " + e);
@@ -216,18 +235,18 @@ public class ConnectionData {
                         editor.putString(SHARED_GCM_ID, regid);
                         editor.apply();
                     }
-                    ConnectionData.regid = sharedGCM;
+                    regid = sharedGCM;
 
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("token", AccessToken.getCurrentAccessToken().getToken());
                     params.put("expiration", "123123");
-                    params.put("fb_id", "AccessToken.getCurrentAccessToken().getUserId()");
+                    params.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
                     params.put("gcm_id", regid);
                     post("/api/v1/user/login/", params, true);
 
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString(ConnectionData.SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
-                    editor.putString(ConnectionData.SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
+                    editor.putString(SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
+                    editor.putString(SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
                     editor.apply();
                 }catch (IOException e) {
                     Log.e("startGCM", "IOException: " + e);
@@ -337,43 +356,10 @@ public class ConnectionData {
     }
 
     public static boolean isNetworkAvailable(Context context) {
-        /*if (checkNetwork(context)) {
-            try {
-                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
-                urlc.setRequestProperty("User-Agent", "Test");
-                urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(1500);
-                urlc.connect();
-                Log.e("Network", urlc.getResponseCode() == 200 ? "True" : "False");
-                return (urlc.getResponseCode() == 200);
-            } catch (IOException e) {
-                Log.e("Network", "False");
-                return false;
-            } catch (Exception e) {
-                Log.e("Network", "False");
-                return false;
-            }
-        }
-        Log.e("Network", "False");
-        return false;*/
         ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
 
         if (netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()) {
-            /*
-             * Toast.makeText(getActivity(), "No Internet connection!",
-             * Toast.LENGTH_LONG).show();
-             */
-            return false;
-        }
-        return true;
-        //return true;
-    }
-
-    public static boolean checkNetworkAvailable(Context context) {
-        if (!isNetworkAvailable(context)) {
-            Toast toast = Toast.makeText(context, "Network Unavailable", Toast.LENGTH_SHORT);
-            toast.show();
             return false;
         }
         return true;
@@ -383,20 +369,13 @@ public class ConnectionData {
         if (MainActivity.getActivity() == null) {
             return;
         }
-        if (!isNetworkAvailable(MainActivity.getActivity())) {
-            Toast toast = Toast.makeText(MainActivity.getActivity(), "Network Unavailable", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-        //ConnectionData.showNotification("Message", MainActivity.getActivity());
     }
 
     public static void setupProfile(Context context){
         if (!isNetworkAvailable(context)) {
             return;
         }
-        //Log.e("FBProfile", "ID: " + Profile.getCurrentProfile().getId());
-        //Log.e("FBProfile", "Name: " + Profile.getCurrentProfile().getName());
-        ConnectionData.setSharedUserID(context);
+        setSharedUserID(context);
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/friends",
@@ -423,21 +402,30 @@ public class ConnectionData {
                                 try {
                                     MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
                                             array.getJSONObject(i).getString("id")));
-                                    //Log.e("FBProfile", "Name: " + array.getJSONObject(i).getString("name") + ", ID: " + array.getJSONObject(i).getString("id"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
-                        if (ViewReceived.getViewReceived() != null) {
-                            ViewReceived.getViewReceived().notifyDataSetChanged();
-                        }
-                        if (ViewSent.getViewSent() != null) {
-                            ViewSent.getViewSent().notifyDataSetChanged();
-                        }
-                        if (ViewHistory.getViewHistory() != null) {
-                            ViewHistory.getViewHistory().notifyDataSetChanged();
-                        }
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (ViewReceived.getViewReceived() != null) {
+                                    ViewReceived.getViewReceived().notifyDataSetChanged();
+                                }
+                                if (ViewSent.getViewSent() != null) {
+                                    ViewSent.getViewSent().notifyDataSetChanged();
+                                }
+                                if (ViewHistory.getViewHistory() != null) {
+                                    ViewHistory.getViewHistory().notifyDataSetChanged();
+                                }
+                            }
+                        }, 1000);
+                        /*if (SampleData.getReceivedList().isEmpty() && SampleData.getSentList().isEmpty()
+                                && SampleData.getHistoryList().isEmpty()) {
+                            loadReminders();
+                        }*/
                         if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
                             CreateNewReminderDialog.dialog.completeRefreshList();
                         }
@@ -446,7 +434,7 @@ public class ConnectionData {
         ).executeAsync();
     }
 
-    public static void showNotification(String eventtext, Context context) {
+    public static void showNotification(String sender, String eventtext, Context context) {
         // Set the icon, scrolling text and timestamp
 
         NotificationManager notificationManager = (NotificationManager) context
@@ -465,7 +453,9 @@ public class ConnectionData {
                 notificationIntent, 0);
 
         // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(context, "MindMe ", eventtext,
+        String title = sender + " sent you a reminder";
+
+        notification.setLatestEventInfo(context, title, eventtext,
                 intent);
 
         notification.flags |= Notification.FLAG_AUTO_CANCEL;

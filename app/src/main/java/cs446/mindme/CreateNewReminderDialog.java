@@ -162,6 +162,7 @@ public class CreateNewReminderDialog extends Dialog implements
                 if (message.isEmpty() || selectedFriend == null) {
                     return;
                 }
+                SampleData.getSentList().add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE, "0"));
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("message", message);
                 params.put("author_id", AccessToken.getCurrentAccessToken().getUserId());

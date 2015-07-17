@@ -176,7 +176,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", "complete");
+                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
@@ -187,7 +187,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", "decline");
+                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
@@ -202,7 +202,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", "canceled");
+                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
