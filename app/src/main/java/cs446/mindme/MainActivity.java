@@ -242,6 +242,8 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
             return true;
+        } else if (id == R.id.refresh_icon) {
+            ConnectionData.loadReminders();
         } else if (id == R.id.logout_settings) {
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("token", AccessToken.getCurrentAccessToken().getToken());

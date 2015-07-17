@@ -148,7 +148,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                                 notifyDataSetChanged();
                                 HashMap<String, String> params = new HashMap<String, String>();
                                 params.put("message_id", getGroup(groupPosition).getID());
-                                params.put("new_status", "active");
+                                params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.ACTIVE));
                                 params.put("message", changedMessage);
                                 ConnectionData.post("/api/v1/reminder/update/", params, false);
                             }

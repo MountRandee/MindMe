@@ -89,7 +89,7 @@ public class ConnectionData {
                 Log.e("loadReminders", "loading");
                 try {
                     HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/" + "4" + "/");
+                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/" + Profile.getCurrentProfile().getId() + "/?deref=all");
                     HttpResponse response = client.execute(request);
 
                     // Get the response
@@ -203,6 +203,9 @@ public class ConnectionData {
                         responseEntity.append(line);
                     }
                     Log.e("post", "response entity: " + responseEntity.toString());
+                    if (response.getStatusLine().getStatusCode() != 200) {
+                        showToast(response.getStatusLine().getReasonPhrase());
+                    }
                     if (shouldReloadReminders) {
                         loadReminders();
                     }
@@ -254,6 +257,17 @@ public class ConnectionData {
             }
         });
         thread.start();
+    }
+
+    public static void showToast(final String message) {
+        if (MainActivity.getActivity() != null) {
+            MainActivity.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.getActivity(), message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     public static void setSharedUserID(Context context) {
