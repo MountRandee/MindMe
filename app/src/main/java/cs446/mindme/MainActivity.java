@@ -108,7 +108,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
 
 
 
-        SharedPreferences prefs = getSharedPreferences(ConnectionData.MINDME_SHARED_PREF, Context.MODE_PRIVATE);
+        /*SharedPreferences prefs = getSharedPreferences(ConnectionData.MINDME_SHARED_PREF, Context.MODE_PRIVATE);
         String sharedGCM = prefs.getString(ConnectionData.SHARED_GCM_ID, "");
 
         if (sharedGCM.isEmpty()) {
@@ -167,7 +167,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
 
 
