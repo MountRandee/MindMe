@@ -72,6 +72,7 @@ public class EventsAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 EventDetailsDataHolder eventDetails = new EventDetailsDataHolder();
+                // Get the event information from a JSON response
                 String jsonAddress = EventRequest.buildAddress(getGroup(groupPosition).get_site(), getGroup(groupPosition).get_id());
                 EventRequest eventConnection = new EventRequest();
                 try {
@@ -82,8 +83,43 @@ public class EventsAdapter extends BaseExpandableListAdapter {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
+                // Build the dialog
                 final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(_context);
-                dialogBuilder.setMessage(eventDetails.get_description());
+                // Create the date and time string
+                StringBuilder dateTimeSB = new StringBuilder();
+                boolean equalSize = (eventDetails.get_startDate().size() == eventDetails.get_startTime().size());
+                if (equalSize) {
+                    for (int i = 0; i < eventDetails.get_startDate().size(); i++) {
+                        dateTimeSB.append(eventDetails.get_startDate().get(i))
+                                .append(" @ ")
+                                .append(eventDetails.get_startTime().get(i))
+                                .append("\n");
+                    }
+                }
+                // Create the location string
+                StringBuilder locationSB = new StringBuilder();
+                locationSB.append(eventDetails.get_locationName())
+                        .append("\n")
+                        .append(eventDetails.get_locationStreet())
+                        .append("\n")
+                        .append(eventDetails.get_locationCity())
+                        .append("\n")
+                        .append(eventDetails.get_locationProvince())
+                        .append("\n")
+                        .append(eventDetails.get_locationPostal())
+                        .append("\n");
+                // Build the dialog message
+                StringBuilder dialogMessage = new StringBuilder();
+                dialogMessage.append("Description:\n")
+                        .append(eventDetails.get_description() + "\n\n")
+                        .append("Dates and Times:\n")
+                        .append(dateTimeSB.toString() + "\n")
+                        .append("Location:\n")
+                        .append(locationSB.toString() + "\n")
+                        .append("Link:\n")
+                        .append(eventDetails.get_link() + "\n");
+
+                dialogBuilder.setMessage(dialogMessage.toString());
                 dialogBuilder.setTitle(getGroup(groupPosition).get_title());
                 // final TextView dialogText = new TextView(_context);
                 dialogBuilder.show();
