@@ -32,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -54,7 +55,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     public static class Friend {
         public String name;
         public String id;
-        public boolean isSelected = false;
 
         public Friend(String name, String id) {
             this.name = name;
@@ -62,9 +62,11 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         }
 
         public static Friend getFriend(String id) {
-            for (Friend friend : friends) {
-                if (id.equals(friend.id)) {
-                    return friend;
+            if (id != null && friends != null) {
+                for (Friend friend : friends) {
+                    if (friend.id != null && id.equals(friend.id)) {
+                        return friend;
+                    }
                 }
             }
             return new Friend("Unknown", id);
@@ -86,113 +88,8 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*SharedPreferences prefs = getSharedPreferences(ConnectionData.MINDME_SHARED_PREF, Context.MODE_PRIVATE);
-        String sharedGCM = prefs.getString(ConnectionData.SHARED_GCM_ID, "");
-
-        if (sharedGCM.isEmpty()) {
-            if (ConnectionData.gcm == null) {
-                ConnectionData.gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-            }
-            InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
-            //instanceID.deleteInstanceID ();
-
-            try {
-                ConnectionData.regid = instanceID.getToken(ConnectionData.PROJECT_NUMBER,
-                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            ConnectionData.msg = "Device registered, registration ID=" + ConnectionData.regid;
-            Log.i("GCM", ConnectionData.msg);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString(ConnectionData.SHARED_GCM_ID, ConnectionData.regid);
-            editor.apply();
-        }
-
-
-        String sharedToken = prefs.getString(ConnectionData.SHARED_TOKEN, "");
-        String sharedFB = prefs.getString(ConnectionData.SHARED_FB_ID, "");
-
-        if (sharedToken.isEmpty() || !sharedToken.equals(AccessToken.getCurrentAccessToken().getToken())
-                || sharedFB.isEmpty() || !sharedFB.equals(AccessToken.getCurrentAccessToken().getUserId())) {
-
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("/api/v1/user/login/");
-            try {
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("token",
-                        AccessToken.getCurrentAccessToken().getToken()));
-                nameValuePairs.add(new BasicNameValuePair("expiration",
-                        AccessToken.getCurrentAccessToken().getExpires().toString()));
-                nameValuePairs.add(new BasicNameValuePair("fb_id",
-                        AccessToken.getCurrentAccessToken().getUserId()));
-                nameValuePairs.add(new BasicNameValuePair("gcm_id",
-                        ConnectionData.regid));
-                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                HttpResponse response = client.execute(post);
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString(ConnectionData.SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
-                editor.putString(ConnectionData.SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
-                editor.apply();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         activity = this;
+        ConnectionData.startGCM(this);
         if(timer != null){
             timer.cancel();
         }
@@ -219,12 +116,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         // TODO: remove this
-        SampleData.populateSampleData();
-        ConnectionData.applyAllSharedReminders(getApplicationContext());
-        if (SampleData.receivedList.isEmpty() && SampleData.sentList.isEmpty() && SampleData.historyList.isEmpty()) {
-            SampleData.populateSampleData();
-        }
-
         actionBar = getActionBar();
         reminderPagerAdapter = new ReminderPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -380,6 +271,10 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             dialog.show();
             return true;
         } else if (id == R.id.logout_settings) {
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("token", AccessToken.getCurrentAccessToken().getToken());
+            params.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
+            ConnectionData.post("/api/v1/user/logout/", params, false);
             LoginManager.getInstance().logOut();
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);

@@ -81,7 +81,7 @@ public class SampleData {
         return new Date(today.getYear(), rand.nextInt(today.getMonth()), rand.nextInt(28), rand.nextInt(24), rand.nextInt(60));
     }
 
-    public static void populateSampleData()
+    /*public static void populateSampleData()
     {
         ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED,
                 "Bring phone for demo", new MainActivity.Friend("Emily Na", "1001165806602425"), getRandomDate(), ReminderDataHolder.reminderStatus.ACTIVE);
@@ -113,6 +113,6 @@ public class SampleData {
         if (MainActivity.getActivity() != null) {
             ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
         }
-    }
+    }*/
 
 }

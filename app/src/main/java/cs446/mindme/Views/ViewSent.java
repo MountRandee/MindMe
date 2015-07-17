@@ -16,6 +16,8 @@ import cs446.mindme.SampleData;
 
 public class ViewSent extends Fragment {
 
+    public static ViewSent viewSent;
+    public static ViewSent getViewSent() { return viewSent; }
     ReminderListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
@@ -23,6 +25,7 @@ public class ViewSent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("creating sent");
+        viewSent = this;
         final View rootView = inflater.inflate(R.layout.view_sent, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.sent_list);
 
@@ -95,6 +98,14 @@ public class ViewSent extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (listAdapter != null && this.isVisible()) {
             listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void notifyDataSetChanged() {
+        try {
+            listAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+
         }
     }
 

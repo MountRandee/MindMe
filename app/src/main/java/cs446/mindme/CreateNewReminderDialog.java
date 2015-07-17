@@ -18,10 +18,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 import cs446.mindme.Adapters.FriendsAdapter;
@@ -160,12 +162,11 @@ public class CreateNewReminderDialog extends Dialog implements
                 if (message.isEmpty() || selectedFriend == null) {
                     return;
                 }
-                SampleData.sentList.add(new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                        message, selectedFriend, date, ReminderDataHolder.reminderStatus.ACTIVE));
-                SampleData.sortLists();
-                if (MainActivity.getActivity() != null) {
-                    ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
-                }
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("message", message);
+                params.put("author_id", AccessToken.getCurrentAccessToken().getUserId());
+                params.put("assignee_id", selectedFriend.id);
+                ConnectionData.post("/api/v1/reminder/create/", params, true);
                 dismiss();
                 break;
             case R.id.refreshFriendsButtonBtn:

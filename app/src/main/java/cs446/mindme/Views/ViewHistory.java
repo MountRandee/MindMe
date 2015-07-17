@@ -14,6 +14,8 @@ import cs446.mindme.SampleData;
 
 public class ViewHistory extends Fragment {
 
+    public static ViewHistory viewHistory;
+    public static ViewHistory getViewHistory() { return viewHistory; }
     ReminderListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
@@ -22,6 +24,7 @@ public class ViewHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         System.out.println("creating history");
+        viewHistory = this;
         final View rootView = inflater.inflate(R.layout.view_history, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.history_list);
 
@@ -47,6 +50,14 @@ public class ViewHistory extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (listAdapter != null && this.isVisible()) {
             listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void notifyDataSetChanged() {
+        try {
+            listAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+
         }
     }
 

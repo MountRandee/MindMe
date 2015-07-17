@@ -18,35 +18,59 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 import cs446.mindme.DataHolders.ReminderDataHolder;
+import cs446.mindme.Views.ViewHistory;
+import cs446.mindme.Views.ViewReceived;
+import cs446.mindme.Views.ViewSent;
 
 /**
  * Created by richardfa on 15-07-12.
  */
 public class ConnectionData {
     private static ConnectionData ourInstance = new ConnectionData();
+
+    public static String DOMAIN = "http://10.0.2.2:5000";
 
     public static String MINDME_SHARED_PREF = "mindmesharedpref";
 
@@ -64,6 +88,156 @@ public class ConnectionData {
     public static String SHARED_GCM_ID = "sharedGCMID";
     public static String SHARED_FB_ID = "sharedFBID";
     public static String SHARED_TOKEN = "sharedToken";
+
+    public static void loadReminders() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/3/");
+                    HttpResponse response = client.execute(request);
+
+                    // Get the response
+                    BufferedReader rd = new BufferedReader
+                            (new InputStreamReader(response.getEntity().getContent()));
+
+                    String line = "";
+                    StringBuffer error = new StringBuffer();
+                    while ((line = rd.readLine()) != null) {
+                        error.append(line);
+                    }
+
+                    JSONObject obj = new JSONObject(error.toString());
+
+                    SampleData.getReceivedList().clear();
+                    SampleData.getSentList().clear();
+                    SampleData.getHistoryList().clear();
+
+                    JSONArray receivedMsgs = obj.getJSONObject("result").getJSONArray("received_messages");
+                    JSONArray sentMsgs = obj.getJSONObject("result").getJSONArray("sent_messages");
+                    for (int i = 0 ; i < receivedMsgs.length() ; i++) {
+                        String id = receivedMsgs.getJSONObject(i).getString("id");
+                        String message = receivedMsgs.getJSONObject(i).getString("message");
+                        MainActivity.Friend from = MainActivity.Friend.getFriend(receivedMsgs.getJSONObject(i).getString("from"));
+                        String last_modified_date = receivedMsgs.getJSONObject(i).getString("last_modified_date");
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                        Date date = format.parse(last_modified_date);
+                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, from, date, ReminderDataHolder.reminderStatus.ACTIVE, id);
+                        if (!SampleData.getReceivedList().contains(reminder)) {
+                            SampleData.getReceivedList().add(reminder);
+                        }
+                    }
+                    for (int i = 0 ; i < sentMsgs.length() ; i++) {
+                        String message = sentMsgs.getJSONObject(i).getString("message");
+                        MainActivity.Friend to = MainActivity.Friend.getFriend(sentMsgs.getJSONObject(i).getString("to"));
+                        String last_modified_date = sentMsgs.getJSONObject(i).getString("last_modified_date");
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                        Date date = format.parse(last_modified_date);
+                        String id = sentMsgs.getJSONObject(i).getString("id");
+                        ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, to, date, ReminderDataHolder.reminderStatus.ACTIVE, id);
+                        if (!SampleData.getSentList().contains(reminder)) {
+                            SampleData.getSentList().add(reminder);
+                        }
+                    }
+                    SampleData.sortLists();
+                    if (ViewReceived.getViewReceived() != null) {
+                        ViewReceived.getViewReceived().notifyDataSetChanged();
+                    }
+                    if (ViewSent.getViewSent() != null) {
+                        ViewSent.getViewSent().notifyDataSetChanged();
+                    }
+                    if (ViewHistory.getViewHistory() != null) {
+                        ViewHistory.getViewHistory().notifyDataSetChanged();
+                    }
+                    if (MainActivity.getActivity() != null) {
+                        ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
+                    }
+                } catch (IOException e) {
+                    Log.e("loadReminders", "IOException: " + e);
+                } catch (JSONException e) {
+                    Log.e("loadReminders", "JSONException: " + e);
+                } catch (ParseException e) {
+                    Log.e("loadReminders", "ParseException: " + e);
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void post(final String appendURL, final HashMap<String, String>params, final boolean shouldReloadReminders) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    StringBuffer appendParams = new StringBuffer();
+                    for (HashMap.Entry<String, String>param : params.entrySet()) {
+                        appendParams.append("&" + param.getKey() + "=" + URLEncoder.encode(param.getValue()));
+                    }
+                    String url = ConnectionData.DOMAIN + appendURL + "?" + appendParams.toString().substring(1);
+                    Log.e("post", "URL: " + url);
+                    HttpPost post = new HttpPost(url);
+                    HttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(post);
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                    String line = "";
+                    StringBuffer responseEntity = new StringBuffer();
+                    while ((line = rd.readLine()) != null) {
+                        responseEntity.append(line);
+                    }
+                    Log.e("post", "response entity: " + responseEntity.toString());
+                    if (shouldReloadReminders) {
+                        ConnectionData.loadReminders();
+                    }
+                } catch (IOException e) {
+                    Log.e("post", "IOException: " + e);
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void startGCM(final Context context) {
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    FacebookSdk.sdkInitialize(MainActivity.getActivity());
+                    SharedPreferences prefs = context.getSharedPreferences(MINDME_SHARED_PREF, Context.MODE_PRIVATE);
+                    String sharedGCM = prefs.getString(SHARED_GCM_ID, "");
+                    if (sharedGCM.isEmpty()) {
+                        if (gcm == null) {
+                            gcm = GoogleCloudMessaging.getInstance(context);
+                        }
+                        InstanceID instanceID = InstanceID.getInstance(context);
+                        regid = instanceID.getToken(PROJECT_NUMBER, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                        Log.e("startGCM", "registration ID: " + regid);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString(SHARED_GCM_ID, regid);
+                        editor.apply();
+                    }
+                    ConnectionData.regid = sharedGCM;
+
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("token", AccessToken.getCurrentAccessToken().getToken());
+                    params.put("expiration", "123123");
+                    params.put("fb_id", "AccessToken.getCurrentAccessToken().getUserId()");
+                    params.put("gcm_id", regid);
+                    post("/api/v1/user/login/", params, true);
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(ConnectionData.SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
+                    editor.putString(ConnectionData.SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
+                    editor.apply();
+                }catch (IOException e) {
+                    Log.e("startGCM", "IOException: " + e);
+                } catch (Exception e) {
+                    Log.e("startGCM", "Exception: " + e);
+                }
+            }
+        });
+        thread.start();
+    }
 
     public static void setSharedUserID(Context context) {
         SharedPreferences.Editor editor = context.getSharedPreferences(MINDME_SHARED_PREF, Context.MODE_PRIVATE).edit();
@@ -162,42 +336,6 @@ public class ConnectionData {
         }
     }
 
-    public static String printKeyHash(Activity context) {
-        PackageInfo packageInfo;
-        String key = null;
-        try {
-            //getting application package name, as defined in manifest
-            String packageName = context.getApplicationContext().getPackageName();
-
-            //Retriving package info
-            packageInfo = context.getPackageManager().getPackageInfo(packageName,
-                    PackageManager.GET_SIGNATURES);
-
-            for (Signature signature : packageInfo.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                key = new String(Base64.encode(md.digest(), 0));
-                // String key = new String(Base64.encodeBytes(md.digest()));
-                return key;
-            }
-        } catch (PackageManager.NameNotFoundException e1) {
-            return e1.toString();
-        } catch (NoSuchAlgorithmException e) {
-            return e.toString();
-        } catch (Exception e) {
-            return e.toString();
-        }
-
-        return key;
-    }
-
-    public static boolean checkNetwork(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     public static boolean isNetworkAvailable(Context context) {
         /*if (checkNetwork(context)) {
             try {
@@ -290,6 +428,15 @@ public class ConnectionData {
                                     e.printStackTrace();
                                 }
                             }
+                        }
+                        if (ViewReceived.getViewReceived() != null) {
+                            ViewReceived.getViewReceived().notifyDataSetChanged();
+                        }
+                        if (ViewSent.getViewSent() != null) {
+                            ViewSent.getViewSent().notifyDataSetChanged();
+                        }
+                        if (ViewHistory.getViewHistory() != null) {
+                            ViewHistory.getViewHistory().notifyDataSetChanged();
                         }
                         if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
                             CreateNewReminderDialog.dialog.completeRefreshList();

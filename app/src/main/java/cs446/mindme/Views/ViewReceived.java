@@ -16,12 +16,15 @@ import cs446.mindme.SampleData;
 
 public class ViewReceived extends Fragment {
 
+    private static ViewReceived viewReceived;
+    public static ViewReceived getViewReceived() { return viewReceived; }
     ReminderListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<ReminderDataHolder> reminderList;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("creating received");
+        viewReceived = this;
         final View rootView = inflater.inflate(R.layout.view_received, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.received_list);
 
@@ -94,6 +97,14 @@ public class ViewReceived extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (listAdapter != null && this.isVisible()) {
             listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void notifyDataSetChanged() {
+        try {
+            listAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+
         }
     }
 

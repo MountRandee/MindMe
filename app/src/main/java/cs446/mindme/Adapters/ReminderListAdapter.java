@@ -1,6 +1,7 @@
 package cs446.mindme.Adapters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.facebook.login.widget.ProfilePictureView;
 
+import cs446.mindme.ConnectionData;
 import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
@@ -144,6 +146,11 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             } else {
                                 getGroup(groupPosition).set_message(changedMessage);
                                 notifyDataSetChanged();
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                params.put("message_id", getGroup(groupPosition).getID());
+                                params.put("new_status", "active");
+                                params.put("message", changedMessage);
+                                ConnectionData.post("/api/v1/reminder/update/", params, false);
                             }
                         }
                     });
@@ -166,12 +173,22 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onClick(View v) {
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("message_id", getGroup(groupPosition).getID());
+                        params.put("new_status", "complete");
+                        params.put("message", getGroup(groupPosition).getMessage());
+                        ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
                 });
                 buttonDecline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("message_id", getGroup(groupPosition).getID());
+                        params.put("new_status", "decline");
+                        params.put("message", getGroup(groupPosition).getMessage());
+                        ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
                 });
 
@@ -183,6 +200,11 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                     public void onClick (View v) {
 
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("message_id", getGroup(groupPosition).getID());
+                        params.put("new_status", "canceled");
+                        params.put("message", getGroup(groupPosition).getMessage());
+                        ConnectionData.post("/api/v1/reminder/update/", params, false);
                     }
                 });
             }

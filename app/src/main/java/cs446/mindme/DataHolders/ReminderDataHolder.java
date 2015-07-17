@@ -26,13 +26,15 @@ public class ReminderDataHolder implements Comparable<ReminderDataHolder> {
     private MainActivity.Friend _from;
     private Date _time;
     private reminderStatus _status;
+    private String _id;
 
-    public ReminderDataHolder(reminderType type, String msg, MainActivity.Friend from, Date time, reminderStatus status) {
+    public ReminderDataHolder(reminderType type, String msg, MainActivity.Friend from, Date time, reminderStatus status, String id) {
         this._type = type;
         this._message = msg;
         this._from = from;
         this._time = time;
         this._status = status;
+        this._id = id;
     }
 
     public reminderType getType() { return _type; }
@@ -47,6 +49,7 @@ public class ReminderDataHolder implements Comparable<ReminderDataHolder> {
         return dateFormat.format(_time);
     }
     public reminderStatus getStatus() { return _status; }
+    public String getID() { return  _id; }
 
     public void set_message(String msg) {
         this._message = msg;
