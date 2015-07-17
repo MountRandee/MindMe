@@ -131,7 +131,52 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         buttonCreateReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, "lol");
+                EventDetailsDataHolder eventDetails = new EventDetailsDataHolder();
+                // Get the event information from a JSON response
+                String jsonAddress = EventRequest.buildAddress(getGroup(groupPosition).get_site(), getGroup(groupPosition).get_id());
+                EventRequest eventConnection = new EventRequest();
+                try {
+                    String responseString = eventConnection.execute(jsonAddress).get();
+                    eventDetails = eventConnection.buildEventInfo(responseString);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                // Create the date and time string
+                StringBuilder dateTimeSB = new StringBuilder();
+                boolean equalSize = (eventDetails.get_startDate().size() == eventDetails.get_startTime().size());
+                if (equalSize) {
+                    for (int i = 0; i < eventDetails.get_startDate().size(); i++) {
+                        dateTimeSB.append(eventDetails.get_startDate().get(i))
+                                .append(" @ ")
+                                .append(eventDetails.get_startTime().get(i))
+                                .append("\n");
+                    }
+                }
+                // Create the location string
+                StringBuilder locationSB = new StringBuilder();
+                locationSB.append(eventDetails.get_locationName())
+                        .append("\n")
+                        .append(eventDetails.get_locationStreet())
+                        .append("\n")
+                        .append(eventDetails.get_locationCity())
+                        .append("\n")
+                        .append(eventDetails.get_locationProvince())
+                        .append("\n")
+                        .append(eventDetails.get_locationPostal())
+                        .append("\n");
+                // Build the dialog message
+                StringBuilder dialogMessage = new StringBuilder();
+                dialogMessage.append(getGroup(groupPosition).get_title() + "\n\n")
+                        .append("Dates and Times:\n")
+                        .append(dateTimeSB.toString() + "\n")
+                        .append("Location:\n")
+                        .append(locationSB.toString() + "\n")
+                        .append("Link:\n")
+                        .append(eventDetails.get_link() + "\n");
+                // Build the dialog
+                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, dialogMessage.toString());
                 dialog.show();
             }
         });

@@ -7,31 +7,21 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Scroller;
 import android.widget.TextView;
-
 import com.facebook.AccessToken;
-import com.facebook.login.widget.LoginButton;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Random;
-
 import cs446.mindme.Adapters.FriendsAdapter;
-import cs446.mindme.DataHolders.ReminderDataHolder;
 
-/**
- * Created by richardfa on 15-07-10.
- */
 public class CreateNewReminderDialog extends Dialog implements
         android.view.View.OnClickListener {
 
@@ -111,6 +101,14 @@ public class CreateNewReminderDialog extends Dialog implements
         send.setOnClickListener(this);
         refresh.setOnClickListener(this);
         final EditText editText = (EditText) findViewById(R.id.newReminderMessage);
+        if (useContext) {
+            editText.setSingleLine(false);
+            editText.setMaxLines(10);
+            editText.setHorizontalScrollBarEnabled(false);
+            editText.setScroller(new Scroller(_context));
+            editText.setVerticalScrollBarEnabled(true);
+            editText.setMovementMethod(new ScrollingMovementMethod());
+        }
         if (message != null ) {
             editText.setText(message);
         }
