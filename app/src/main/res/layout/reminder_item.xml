@@ -13,6 +13,7 @@
 
     <TextView style="@style/ReminderItemText.Large"
         android:id="@+id/reminder_text"
+        android:singleLine="true"
         android:ellipsize="end"
         android:text="Message goes here."
         android:layout_above="@+id/reminder_from_text"
