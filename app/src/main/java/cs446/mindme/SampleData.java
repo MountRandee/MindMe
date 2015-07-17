@@ -52,9 +52,9 @@ public class SampleData {
                 break;
         }
         sortLists();
-        if (MainActivity.getActivity() != null) {
+        /*if (MainActivity.getActivity() != null) {
             ConnectionData.saveAllSharedReminders(MainActivity.getActivity());
-        }
+        }*/
     }
 
     static public ArrayList<ReminderDataHolder> getReceivedList()

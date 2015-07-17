@@ -4,6 +4,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import android.os.Bundle;
 import android.util.Log;
 
+import cs446.mindme.ConnectionData;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.MainActivity;
 import cs446.mindme.SampleData;
@@ -23,6 +24,6 @@ public class GcmMessageHandler extends GcmListenerService {
         Log.d("GCM", "Message: " + message);
 
         // populate push notification
-        //SampleData.getReceivedList().add(new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, ))
+        ConnectionData.showNotification(sender, message, MainActivity.getActivity());
     }
 }

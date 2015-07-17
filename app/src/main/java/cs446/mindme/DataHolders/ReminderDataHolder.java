@@ -20,6 +20,30 @@ public class ReminderDataHolder implements Comparable<ReminderDataHolder> {
         COMPLETED, DECLINED, CANCELLED, ACTIVE
     }
 
+    public static String statusToString(reminderStatus status) {
+        switch (status) {
+            case COMPLETED:
+                return "complete";
+            case DECLINED:
+                return "decline";
+            case ACTIVE:
+                return "active";
+            default:
+                return "canceled";
+        }
+    }
+
+    public static reminderStatus stringToStatus(String string) {
+        if (string.equals("complete")) {
+            return reminderStatus.COMPLETED;
+        } else if (string.equals("decline")) {
+            return reminderStatus.DECLINED;
+        } else if (string.equals("active")) {
+            return reminderStatus.ACTIVE;
+        }
+        return reminderStatus.CANCELLED;
+    }
+
     private reminderType _type;
     private String _message;
     private MainActivity.Friend _from;
