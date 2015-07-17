@@ -176,7 +176,7 @@ public class EventsAdapter extends BaseExpandableListAdapter {
                         .append("Link:\n")
                         .append(eventDetails.get_link());
                 // Build the dialog
-                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, dialogMessage.toString());
+                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, dialogMessage.toString().replace("&",""));
                 dialog.show();
             }
         });
