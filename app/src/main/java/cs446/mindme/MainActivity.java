@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         System.out.println("creating main activity");
         super.onCreate(savedInstanceState);
         activity = this;
+        setContentView(R.layout.activity_main);
         ConnectionData.startGCM(this);
         if(timer != null){
             timer.cancel();
@@ -84,8 +85,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         timer.schedule(timerTask, 10000, 10000);
 
         startService(new Intent(this, WidgetService.class));
-
-        setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (ViewSidePanelMenu)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -162,24 +161,35 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
 
                 break;
             case 1:
-                fragment = new ViewEvent();
-                viewPager.setVisibility(View.INVISIBLE);;
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                actionBar.setDisplayShowTitleEnabled(true);
-                actionBar.setTitle(mTitle);
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .commit();
+
+                    fragment = new ViewEvent();
+                if (viewPager != null) {
+                    viewPager.setVisibility(View.INVISIBLE);
+                }
+                if (actionBar != null) {
+                    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    actionBar.setTitle(mTitle);
+                }
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
+
                 break;
             case 2:
+
                 fragment = new ViewMisc();
-                viewPager.setVisibility(View.INVISIBLE);;
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                actionBar.setDisplayShowTitleEnabled(true);
-                actionBar.setTitle(mTitle);
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .commit();
+                if (viewPager != null) {
+                    viewPager.setVisibility(View.INVISIBLE);
+                }
+                if (actionBar != null) {
+                    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    actionBar.setTitle(mTitle);
+                }
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
                 break;
         }
     }

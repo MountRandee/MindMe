@@ -61,7 +61,8 @@ public class WidgetService extends Service {
             private float initialTouchX;
             private float initialTouchY;
 
-            @Override public boolean onTouch(View v, MotionEvent event) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x;
@@ -84,8 +85,10 @@ public class WidgetService extends Service {
         });
 
         windowManager.addView(chatHead, params);
-
-        toggleVisibility(false);
+        if (MainActivity.getActivity() != null)
+        {
+            toggleVisibility(false);
+        }
     }
 
     public void toggleVisibility(final boolean visible) {

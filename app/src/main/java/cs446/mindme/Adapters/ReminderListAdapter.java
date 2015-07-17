@@ -132,7 +132,6 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     // Must always create a new dialog
                     final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
-                    editableDialog.setMessage(getGroup(groupPosition).getMessage());
                     editableDialog.setTitle("Edit");
                     final EditText editText = new EditText(_context);
                     editText.setText(getGroup(groupPosition).getMessage());
@@ -145,7 +144,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             if (changedMessage.isEmpty()) {
                                 Toast.makeText(_context, "Reminder message empty !", Toast.LENGTH_SHORT).show();
                             } else {
-                                getGroup(groupPosition).set_message(changedMessage);
+                                getGroup(groupPosition).set_message(changedMessage.replace("&",""));
                                 notifyDataSetChanged();
                                 HashMap<String, String> params = new HashMap<String, String>();
                                 params.put("message_id", getGroup(groupPosition).getID());
