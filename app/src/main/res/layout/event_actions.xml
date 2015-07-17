@@ -6,16 +6,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Info"
+        android:text="More Info"
         android:id="@+id/button_event_info" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create Reminder"
         android:id="@+id/button_event_create_reminder" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send Reminder"
-        android:id="@+id/button_event_send_reminder" />
 </LinearLayout>

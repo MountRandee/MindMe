@@ -37,7 +37,8 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         TextView textViewTitle = (TextView) convertView.findViewById(R.id.text_event_title);
         TextView textViewDate = (TextView) convertView.findViewById(R.id.text_event_date);
         String eventTitle = getGroup(groupPosition).get_title();
-        String eventDate = getGroup(groupPosition).get_startTimes().get(0);
+        String eventDate = getGroup(groupPosition).get_startTimes().get(0).substring(0,10);
+
         textViewTitle.setText(eventTitle);
         textViewDate.setText(eventDate);
         return convertView;
@@ -129,15 +130,6 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         // Create reminder action
         Button buttonCreateReminder = (Button) convertView.findViewById(R.id.button_event_create_reminder);
         buttonCreateReminder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        // Send reminder action
-        Button buttonSendReminder = (Button) convertView.findViewById(R.id.button_event_send_reminder);
-        buttonSendReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
