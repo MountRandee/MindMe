@@ -121,7 +121,6 @@ public class ConnectionData {
                         Date date = format.parse(last_modified_date);
                         ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, from, date, ReminderDataHolder.stringToStatus(status), id);
                         if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
-                            reminder.set_type(ReminderDataHolder.reminderType.RECEIVED);
                             if (!SampleData.getReceivedList().contains(reminder)) {
                                 SampleData.getReceivedList().add(reminder);
                             }
@@ -143,7 +142,6 @@ public class ConnectionData {
                         String id = sentMsgs.getJSONObject(i).getString("id");
                         ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, to, date, ReminderDataHolder.stringToStatus(status), id);
                         if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
-                            reminder.set_type(ReminderDataHolder.reminderType.SENT);
                             if (!SampleData.getSentList().contains(reminder)) {
                                 SampleData.getSentList().add(reminder);
                             }
