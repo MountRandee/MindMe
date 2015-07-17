@@ -118,7 +118,7 @@ public class EventsAdapter extends BaseExpandableListAdapter {
                         .append("Location:\n")
                         .append(locationSB.toString() + "\n")
                         .append("Link:\n")
-                        .append(eventDetails.get_link() + "\n");
+                        .append(eventDetails.get_link());
                 // Set the message and title
                 dialogBuilder.setMessage(dialogMessage.toString());
                 dialogBuilder.setTitle(getGroup(groupPosition).get_title());

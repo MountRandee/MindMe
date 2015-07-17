@@ -98,10 +98,7 @@ public class EventRequest extends AsyncTask<String, Void, String> {
             System.out.println("dataArray length:" + dataArray.length());
 
             for (int i = 0; i < dataArray.length(); i++) {
-                System.out.println("dataArray:" + i);
                 JSONObject eventObject = dataArray.getJSONObject(i);
-                System.out.println(eventObject.getString(keyTitle));
-
                 JSONArray timesArray = eventObject.getJSONArray(keyTimes);
                 List<String> startTimes = new ArrayList<String>();
                 for (int j = 0; j < timesArray.length(); j++) {
