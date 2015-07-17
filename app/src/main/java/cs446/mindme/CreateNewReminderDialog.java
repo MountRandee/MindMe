@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import cs446.mindme.Adapters.FriendsAdapter;
+import cs446.mindme.DataHolders.ReminderDataHolder;
 
 public class CreateNewReminderDialog extends Dialog implements
         android.view.View.OnClickListener {
