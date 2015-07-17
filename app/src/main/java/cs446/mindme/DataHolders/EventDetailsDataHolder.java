@@ -2,9 +2,6 @@ package cs446.mindme.DataHolders;
 
 import java.util.List;
 
-/**
- * Created by randy on 15/07/2015.
- */
 public class EventDetailsDataHolder {
 
     private String _description;

@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
 import cs446.mindme.DataHolders.EventDataHolder;
 import cs446.mindme.DataHolders.EventDetailsDataHolder;
 import cs446.mindme.DataRequest.EventRequest;
@@ -33,12 +32,11 @@ public class EventsAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.event_item, null);
         }
 
-        // Each event item should have a title and a date/timestamp
+        // Each event item should have a title and a date
         TextView textViewTitle = (TextView) convertView.findViewById(R.id.text_event_title);
         TextView textViewDate = (TextView) convertView.findViewById(R.id.text_event_date);
         String eventTitle = getGroup(groupPosition).get_title();
         String eventDate = getGroup(groupPosition).get_startTimes().get(0).substring(0,10);
-
         textViewTitle.setText(eventTitle);
         textViewDate.setText(eventDate);
         return convertView;
@@ -58,6 +56,7 @@ public class EventsAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int groupPosition) {
         return groupPosition;
     }
+
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -67,7 +66,6 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         }
 
         // More info action
-        // Send reminder action
         Button buttonInfo = (Button) convertView.findViewById(R.id.button_event_info);
         buttonInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,10 +117,9 @@ public class EventsAdapter extends BaseExpandableListAdapter {
                         .append(locationSB.toString() + "\n")
                         .append("Link:\n")
                         .append(eventDetails.get_link() + "\n");
-
+                // Set the message and title
                 dialogBuilder.setMessage(dialogMessage.toString());
                 dialogBuilder.setTitle(getGroup(groupPosition).get_title());
-                // final TextView dialogText = new TextView(_context);
                 dialogBuilder.show();
             }
         });
@@ -132,9 +129,9 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         buttonCreateReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
+
 
         return convertView;
     }
