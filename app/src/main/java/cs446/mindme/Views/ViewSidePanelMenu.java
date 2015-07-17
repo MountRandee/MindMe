@@ -1,11 +1,8 @@
 package cs446.mindme.Views;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -28,25 +25,20 @@ import cs446.mindme.R;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
+
 public class ViewSidePanelMenu extends Fragment {
 
     // Remember the position of the selected item.
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
-    /**
-     * Per the design guidelines, you should show the drawer on launch until the user manually
-     * expands it. This shared preference tracks this.
-     */
+     // Per the design guidelines, you should show the drawer on launch until the user manually expands it.
+     // This shared preference tracks this.
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
-    /**
-     * A pointer to the current callbacks instance (the Activity).
-     */
+    // A pointer to the current callbacks instance (the Activity).
     private NavigationDrawerCallbacks mCallbacks;
 
-    /**
-     * Helper component that ties the action bar to the navigation drawer.
-     */
+     // Helper component that ties the action bar to the navigation drawer.     s
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
@@ -57,8 +49,7 @@ public class ViewSidePanelMenu extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    public ViewSidePanelMenu() {
-    }
+    public ViewSidePanelMenu() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -247,10 +238,7 @@ public class ViewSidePanelMenu extends Fragment {
             return true;
         }
 
-        if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }

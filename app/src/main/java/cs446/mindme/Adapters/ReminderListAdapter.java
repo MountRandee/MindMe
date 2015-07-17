@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.util.ArrayList;
 import com.facebook.login.widget.ProfilePictureView;
 
 import cs446.mindme.ConnectionData;
@@ -82,10 +82,10 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
     @Override
     public long getGroupId(int groupPosition) { return groupPosition; }
 
+    // TODO: Implementation with API Call
     // Removes the reminder from the list
     public void removeGroup(int groupPosition, ReminderDataHolder.reminderStatus status, View parent)
     {
-
         if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.RECEIVED) {
             SampleData.addToHistory(0, status, groupPosition);
         } else if (getGroup(groupPosition).getType() == ReminderDataHolder.reminderType.SENT) {
@@ -93,9 +93,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
         }
          _reminderList.remove(groupPosition);
 
-        // TODO: if removed, then should populate in history view
         notifyDataSetChanged();
-
         // NotifyDataSetChanged does not update views, must collapse child with the groupPosition
         if (groupPosition < getGroupCount() + 1) {
             // Parent is the R.id.received_list/sent_list
@@ -107,23 +105,24 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, final ViewGroup parent) {
+
+        // The reminder type determines the child view
         ReminderDataHolder.reminderType rType = getGroup(groupPosition).getType();
+
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater layoutInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (ReminderDataHolder.reminderType.RECEIVED == rType) {
-                convertView = infalInflater.inflate(R.layout.reminder_actions_for_received, null);
+                convertView = layoutInflater.inflate(R.layout.reminder_actions_for_received, null);
             } else if (ReminderDataHolder.reminderType.SENT == rType) {
-                convertView = infalInflater.inflate(R.layout.reminder_actions_for_sent, null);
+                convertView = layoutInflater.inflate(R.layout.reminder_actions_for_sent, null);
             } else {
-                convertView = infalInflater.inflate(R.layout.empty_layout, null);
+                convertView = layoutInflater.inflate(R.layout.empty_layout, null);
             }
         }
 
         // When the Complete/Decline/Cancel button is clicked, it should remove the reminder.
         // When the Edit button is clicked, user should be able to edit the reminder.
-        // TODO: The reminder should be added to HISTORY after complete/decline/cancel.
-        // TODO: History View has no reminder actions temporarily.
         if (ReminderDataHolder.reminderType.HISTORY != rType) {
 
             // Received and Sent reminders have an Edit button
@@ -133,11 +132,13 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     // Must always create a new dialog
                     final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
-                    final EditText editText = new EditText(_context);
                     editableDialog.setMessage(getGroup(groupPosition).getMessage());
                     editableDialog.setTitle("Edit");
+                    final EditText editText = new EditText(_context);
+                    editText.setText(getGroup(groupPosition).getMessage());
                     editableDialog.setView(editText);
                     editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        // Check if the new reminder message is empty
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String changedMessage = editText.getText().toString();
@@ -198,7 +199,6 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick (View v) {
-
                         removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
@@ -213,9 +213,8 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    // TODO: Need to implement the buttons as child somehow
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
+    public Object getChild(int groupPosition, int childPosition) {
         return null;
     }
 

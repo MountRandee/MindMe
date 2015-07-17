@@ -10,13 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import cs446.mindme.DataHolders.EventDataHolder;
 import cs446.mindme.DataHolders.EventDetailsDataHolder;
 
@@ -105,7 +102,6 @@ public class EventRequest extends AsyncTask<String, Void, String> {
                 JSONObject eventObject = dataArray.getJSONObject(i);
                 System.out.println(eventObject.getString(keyTitle));
 
-                // TODO: parse the date
                 JSONArray timesArray = eventObject.getJSONArray(keyTimes);
                 List<String> startTimes = new ArrayList<String>();
                 for (int j = 0; j < timesArray.length(); j++) {
@@ -173,28 +169,26 @@ public class EventRequest extends AsyncTask<String, Void, String> {
         return eventDetails;
     }
 
-
-
     private static String readStream(InputStream in) {
-        BufferedReader reader = null;
-        StringBuffer response = new StringBuffer();
+        BufferedReader bufferedReader = null;
+        StringBuffer responseBuffer = new StringBuffer();
         try {
-            reader = new BufferedReader(new InputStreamReader(in));
+            bufferedReader = new BufferedReader(new InputStreamReader(in));
             String line = "";
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                responseBuffer.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (reader != null) {
+            if (bufferedReader != null) {
                 try {
-                    reader.close();
+                    bufferedReader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return response.toString();
+        return responseBuffer.toString();
     }
 }

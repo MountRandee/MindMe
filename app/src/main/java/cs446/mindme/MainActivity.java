@@ -2,43 +2,24 @@ package cs446.mindme;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.*;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import cs446.mindme.Adapters.ReminderPagerAdapter;
-// import com.facebook.FacebookSdk;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEmpty;
 import cs446.mindme.Views.ViewEvent;
@@ -48,9 +29,9 @@ import cs446.mindme.Views.ViewMisc;
 public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.NavigationDrawerCallbacks {
 
     private static MainActivity activity;
-    public static ArrayList<Friend> friends;
-
     public static MainActivity getActivity() { return activity; }
+
+    public static ArrayList<Friend> friends;
 
     public static class Friend {
         public String name;
@@ -201,8 +182,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                         .commit();
                 break;
         }
-
-
     }
 
     public void onSectionAttached(int number) {
@@ -224,20 +203,6 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode){
-            case 0:
-                if(resultCode == RESULT_OK) {
-                    //Do something useful with data
-                }
-                break;
-        }
-    }*/
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -263,10 +228,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.new_reminder_icon) {
+        if (id == R.id.new_reminder_icon) {
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
             return true;
@@ -293,15 +255,16 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             timer = null;
         }*/
     }
+     /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 0:
+                if(resultCode == RESULT_OK) {
+                    //Do something useful with data
+                }
+                break;
+        }
+    }*/
 
 }
-
-/** Called when the user clicks the Send button *//*
-    public void sendMessage(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }*/

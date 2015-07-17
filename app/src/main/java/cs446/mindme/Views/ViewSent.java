@@ -24,12 +24,11 @@ public class ViewSent extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("creating sent");
+        System.out.println("Creating Sent fragment.");
         viewSent = this;
         final View rootView = inflater.inflate(R.layout.view_sent, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.sent_list);
 
-        // prepareSampleData();
         reminderList = SampleData.getSentList();
         listAdapter = new ReminderListAdapter(rootView.getContext(), reminderList);
         expListView.setAdapter(listAdapter);
@@ -44,23 +43,12 @@ public class ViewSent extends Fragment {
         });
 
         // When reminder expanded, collapse the previous expanded reminder
-        // TODO: Remove toast later
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int prevPosition = -1;
 
             @Override
             public void onGroupExpand(int groupPosition) {
-                /*Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage()
-                                + " Expanded:" + groupPosition
-                                + " Prev:" + prevPosition,
-                        Toast.LENGTH_SHORT).show();*/
                 if (prevPosition != groupPosition) {
-                   /* Toast.makeText(rootView.getContext().getApplicationContext(),
-                            reminderList.get(groupPosition).getMessage()
-                                    *//*+ " prevCount:" + prevCount*//*
-                                    + " currCount:" + listAdapter.getGroupCount(),
-                            Toast.LENGTH_SHORT).show();*/
                     // This may be executed even if position doesn't exit.
                     // Initially didn't work when removing reminders, had to compare with list count.
                     // TODO: Why?
@@ -72,16 +60,9 @@ public class ViewSent extends Fragment {
 
         // TODO: Remove if not needed
         expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-               /* Toast.makeText(rootView.getContext().getApplicationContext(),
-                        reminderList.get(groupPosition).getMessage() + " Collapsed",
-                        Toast.LENGTH_SHORT).show();*/
-            }
+            @Override public void onGroupCollapse(int groupPosition) {}
         });
 
-        // Note: Reminder actions are implemented in the adapter.
-        // TODO: Remove if unnecessary.
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -109,19 +90,4 @@ public class ViewSent extends Fragment {
         }
     }
 
-   /* private void prepareSampleData() {
-        reminderList = new ArrayList<ReminderDataHolder>();
-        ReminderDataHolder r1 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message1", "Randy Cheung", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
-        ReminderDataHolder r2 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message2", "Emily Na", "12:00", ReminderDataHolder.reminderStatus.COMPLETED);
-        ReminderDataHolder r3 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message3", "Arthur Jen", "12:00", ReminderDataHolder.reminderStatus.DECLINED);
-        ReminderDataHolder r4 = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT,
-                "Message4", "Richard Fa", "12:00", ReminderDataHolder.reminderStatus.ACTIVE);
-        reminderList.add(r1);
-        reminderList.add(r2);
-        reminderList.add(r3);
-        reminderList.add(r4);
-    }*/
 }
