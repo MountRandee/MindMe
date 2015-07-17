@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
+import android.widget.Toast;
+
 import com.facebook.login.LoginManager;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -290,10 +292,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.new_reminder_icon) {
+        if (id == R.id.new_reminder_icon) {
             CreateNewReminderDialog dialog = new CreateNewReminderDialog(this);
             dialog.show();
             return true;
