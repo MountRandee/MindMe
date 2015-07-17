@@ -37,6 +37,8 @@ public class CreateNewReminderDialog extends Dialog implements
 
     public static CreateNewReminderDialog dialog = null;
 
+    private boolean useContext;
+    private Context _context;
     public Activity c;
     public Dialog d;
     public Button cancel, send, refresh;
@@ -52,6 +54,13 @@ public class CreateNewReminderDialog extends Dialog implements
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
+    }
+
+    public CreateNewReminderDialog(Context context, String msg) {
+        super(context);
+        this._context = context;
+        this.message = msg;
+        this.useContext = true;
     }
 
     @Override
@@ -71,8 +80,12 @@ public class CreateNewReminderDialog extends Dialog implements
         }
 
         reminding = (TextView) findViewById(R.id.remindingText);
+        if (useContext) {
+            adapter = new FriendsAdapter(_context, friendsCopy);
+        } else {
+            adapter = new FriendsAdapter(c, friendsCopy);
+        }
 
-        adapter = new FriendsAdapter(c, friendsCopy);
         ListView friendsList = (ListView) findViewById(R.id.friendslist);
         friendsList.setAdapter(adapter);
         friendsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,9 +111,13 @@ public class CreateNewReminderDialog extends Dialog implements
         send.setOnClickListener(this);
         refresh.setOnClickListener(this);
         final EditText editText = (EditText) findViewById(R.id.newReminderMessage);
+        if (message != null ) {
+            editText.setText(message);
+        }
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override

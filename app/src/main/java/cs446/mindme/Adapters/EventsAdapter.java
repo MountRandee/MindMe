@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import cs446.mindme.CreateNewReminderDialog;
 import cs446.mindme.DataHolders.EventDataHolder;
 import cs446.mindme.DataHolders.EventDetailsDataHolder;
 import cs446.mindme.DataRequest.EventRequest;
@@ -129,6 +131,8 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         buttonCreateReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, "lol");
+                dialog.show();
             }
         });
 
