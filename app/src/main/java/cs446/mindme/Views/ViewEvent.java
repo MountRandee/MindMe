@@ -18,6 +18,8 @@ import cs446.mindme.R;
 
 public class ViewEvent extends Fragment {
 
+    private static ViewEvent viewEvent;
+    public static ViewEvent getViewEvent() { return viewEvent; }
     EventsAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<EventDataHolder> eventList;
@@ -26,7 +28,7 @@ public class ViewEvent extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         System.out.println("Creating Events fragment.");
-
+        viewEvent = this;
         final View rootView = inflater.inflate(R.layout.view_events, container, false);
         expListView = (ExpandableListView) rootView.findViewById(R.id.event_list);
 
