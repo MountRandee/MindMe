@@ -78,6 +78,10 @@ public class ConnectionData {
 
     public static boolean isLoadingReminders = false;
 
+    public enum callType {
+        LOAD_REMINDERS, LOGIN, LOGOUT, CREATE_REMINDER, EDIT_REMINDER, COMPLETE_REMINDER, DECLINE_REMINDER, CANCEL_REMINDER, GCM, RETRIEVE_FRIENDS, NONE
+    }
+
     public static void loadReminders() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -167,22 +171,17 @@ public class ConnectionData {
                     if (MainActivity.getActivity() != null) {
                         //saveAllSharedReminders(MainActivity.getActivity());
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     isLoadingReminders = false;
-                    Log.e("loadReminders", "IOException: " + e);
-                } catch (JSONException e) {
-                    isLoadingReminders = false;
-                    Log.e("loadReminders", "JSONException: " + e);
-                } catch (ParseException e) {
-                    isLoadingReminders = false;
-                    Log.e("loadReminders", "ParseException: " + e);
+                    showToast(e.getLocalizedMessage(), callType.LOAD_REMINDERS);
+                    Log.e("loadReminders", "Exception: " + e);
                 }
             }
         });
         thread.start();
     }
 
-    public static void post(final String appendURL, final HashMap<String, String>params, final boolean shouldReloadReminders) {
+    public static void post(final String appendURL, final HashMap<String, String>params, final boolean shouldReloadReminders, final callType callType) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -204,13 +203,14 @@ public class ConnectionData {
                     }
                     Log.e("post", "response entity: " + responseEntity.toString());
                     if (response.getStatusLine().getStatusCode() != 200) {
-                        showToast(response.getStatusLine().getReasonPhrase());
+                        showToast(response.getStatusLine().getReasonPhrase(), callType);
                     }
                     if (shouldReloadReminders) {
                         loadReminders();
                     }
-                } catch (IOException e) {
-                    Log.e("post", "IOException: " + e);
+                } catch (Exception e) {
+                    showToast(e.getLocalizedMessage(), callType);
+                    Log.e("post", "Exception: " + e);
                 }
             }
         });
@@ -243,15 +243,14 @@ public class ConnectionData {
                     params.put("expiration", "123123");
                     params.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
                     params.put("gcm_id", regid);
-                    post("/api/v1/user/login/", params, true);
+                    post("/api/v1/user/login/", params, true, callType.LOGIN);
 
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(SHARED_FB_ID, AccessToken.getCurrentAccessToken().getUserId());
                     editor.putString(SHARED_TOKEN, AccessToken.getCurrentAccessToken().getToken());
                     editor.apply();
-                }catch (IOException e) {
-                    Log.e("startGCM", "IOException: " + e);
                 } catch (Exception e) {
+                    showToast(e.getLocalizedMessage(), callType.GCM);
                     Log.e("startGCM", "Exception: " + e);
                 }
             }
@@ -259,12 +258,42 @@ public class ConnectionData {
         thread.start();
     }
 
-    public static void showToast(final String message) {
+    public static void showToast(final String message, final callType callType) {
         if (MainActivity.getActivity() != null) {
             MainActivity.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(MainActivity.getActivity(), message, Toast.LENGTH_LONG).show();
+                    String title;
+                    switch (callType) {
+                        case LOAD_REMINDERS:
+                            title = "Load Reminders Error";
+                            break;
+                        case LOGIN:
+                            title = "Login Error";
+                            break;
+                        case LOGOUT:
+                            title = "Logout Error";
+                            break;
+                        case CREATE_REMINDER:
+                            title = "Create Reminder Error";
+                            break;
+                        case DECLINE_REMINDER:
+                            title = "Decline Reminder Error";
+                            break;
+                        case CANCEL_REMINDER:
+                            title = "Cancel Reminder Error";
+                            break;
+                        case GCM:
+                            title = "GCM Error";
+                            break;
+                        case RETRIEVE_FRIENDS:
+                            title = "Retrieve Friends Error";
+                            break;
+                        default:
+                            title = "Error";
+                            break;
+                    }
+                    Toast.makeText(MainActivity.getActivity(), title + "\n" + message, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -395,51 +424,44 @@ public class ConnectionData {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        JSONObject obj = response.getJSONObject();
-                        JSONArray array = null;
                         try {
+                            JSONObject obj = response.getJSONObject();
+                            JSONArray array = null;
                             array = obj.getJSONArray("data");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
-                        if (MainActivity.friends == null) {
-                            MainActivity.friends = new ArrayList<MainActivity.Friend>();
-                        } else if (!MainActivity.friends.isEmpty()) {
-                            MainActivity.friends.clear();
-                        }
+                            if (MainActivity.friends == null) {
+                                MainActivity.friends = new ArrayList<MainActivity.Friend>();
+                            } else if (!MainActivity.friends.isEmpty()) {
+                                MainActivity.friends.clear();
+                            }
 
-                        if (array != null) {
-                            for (int i=0;i<array.length();i++){
-                                try {
+                            if (array != null) {
+                                for (int i = 0; i < array.length(); i++) {
                                     MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
                                             array.getJSONObject(i).getString("id")));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
                             }
-                        }
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (ViewReceived.getViewReceived() != null) {
-                                    ViewReceived.getViewReceived().notifyDataSetChanged();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (ViewReceived.getViewReceived() != null) {
+                                        ViewReceived.getViewReceived().notifyDataSetChanged();
+                                    }
+                                    if (ViewSent.getViewSent() != null) {
+                                        ViewSent.getViewSent().notifyDataSetChanged();
+                                    }
+                                    if (ViewHistory.getViewHistory() != null) {
+                                        ViewHistory.getViewHistory().notifyDataSetChanged();
+                                    }
                                 }
-                                if (ViewSent.getViewSent() != null) {
-                                    ViewSent.getViewSent().notifyDataSetChanged();
-                                }
-                                if (ViewHistory.getViewHistory() != null) {
-                                    ViewHistory.getViewHistory().notifyDataSetChanged();
-                                }
+                            }, 1000);
+                            if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
+                                CreateNewReminderDialog.dialog.completeRefreshList();
                             }
-                        }, 1000);
-                        /*if (SampleData.getReceivedList().isEmpty() && SampleData.getSentList().isEmpty()
-                                && SampleData.getHistoryList().isEmpty()) {
-                            loadReminders();
-                        }*/
-                        if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
-                            CreateNewReminderDialog.dialog.completeRefreshList();
+                        } catch (Exception e) {
+                            showToast(e.getLocalizedMessage(), callType.RETRIEVE_FRIENDS);
+                            Log.e("setupProfile", "Exception: " + e);
                         }
                     }
                 }

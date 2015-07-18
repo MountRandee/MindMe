@@ -85,6 +85,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         timer.schedule(timerTask, 10000, 10000);
 
         startService(new Intent(this, WidgetService.class));
+        stopService(new Intent(this, WidgetService.class));
 
         mNavigationDrawerFragment = (ViewSidePanelMenu)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -248,7 +249,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("token", AccessToken.getCurrentAccessToken().getToken());
             params.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
-            ConnectionData.post("/api/v1/user/logout/", params, false);
+            ConnectionData.post("/api/v1/user/logout/", params, false, ConnectionData.callType.LOGOUT);
             LoginManager.getInstance().logOut();
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);

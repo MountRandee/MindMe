@@ -182,7 +182,7 @@ public class CreateNewReminderDialog extends Dialog implements
                 params.put("message", message);
                 params.put("author_id", AccessToken.getCurrentAccessToken().getUserId());
                 params.put("assignee_id", selectedFriend.id);
-                ConnectionData.post("/api/v1/reminder/create/", params, true);
+                ConnectionData.post("/api/v1/reminder/create/", params, true, ConnectionData.callType.CREATE_REMINDER);
                 dismiss();
                 break;
             case R.id.refreshFriendsButtonBtn:

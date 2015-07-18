@@ -150,7 +150,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                                 params.put("message_id", getGroup(groupPosition).getID());
                                 params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.ACTIVE));
                                 params.put("message", changedMessage);
-                                ConnectionData.post("/api/v1/reminder/update/", params, false);
+                                ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.EDIT_REMINDER);
                             }
                         }
                     });
@@ -177,7 +177,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
                         params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false);
+                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.COMPLETE_REMINDER);
                     }
                 });
                 buttonDecline.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +188,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
                         params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false);
+                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.DECLINE_REMINDER);
                     }
                 });
 
@@ -203,7 +203,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
                         params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false);
+                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.CANCEL_REMINDER);
                     }
                 });
             }
