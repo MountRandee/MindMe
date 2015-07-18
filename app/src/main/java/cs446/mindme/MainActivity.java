@@ -214,7 +214,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
+    private int ctr = 0;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -224,10 +224,16 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
+            System.out.println("in here" + ctr++);
+            if (ViewEvent.getViewEvent() != null && ViewEvent.getViewEvent().isVisible()) {
+                getMenuInflater().inflate(R.menu.global,menu);
+                return true;
+            } else {
+                getMenuInflater().inflate(R.menu.menu_main, menu);
+                restoreActionBar();
+                return true;
+            }
 
-            getMenuInflater().inflate(R.menu.menu_main, menu);
-            restoreActionBar();
-            return true;
         }
         return super.onCreateOptionsMenu(menu);
     }
