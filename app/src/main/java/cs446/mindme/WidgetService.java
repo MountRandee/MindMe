@@ -2,6 +2,7 @@ package cs446.mindme;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Handler;
@@ -38,11 +39,9 @@ public class WidgetService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         chatHead = new View(this);
-        //chatHead.setImageResource(R.drawable.widget);
         LayoutInflater inflater = LayoutInflater.from(this);
         chatHead = inflater.inflate(R.layout.widget_layout, null, false);
         numberWidget = (TextView) chatHead.findViewById(R.id.numberWidget);
-        //chatHead.inflate(this, R.layout.widget_layout, null);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -85,36 +84,25 @@ public class WidgetService extends Service {
         });
 
         windowManager.addView(chatHead, params);
-        if (MainActivity.getActivity() != null)
-        {
-            toggleVisibility(false);
-        }
     }
 
     public void toggleVisibility(final boolean visible) {
-        MainActivity.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                chatHead.setVisibility(visible ? View.VISIBLE : View.GONE);
-                if (!visible) {
-                    number = 0;
-                }
+        if (MainActivity.getActivity() != null) {
+            if (visible) {
+                startService(new Intent(MainActivity.getActivity(), WidgetService.class));
+            } else {
+                stopService(new Intent(MainActivity.getActivity(), WidgetService.class));
             }
-        });
+        }
     }
 
     public void incrementNumber() {
         if (chatHead == null) {
             return;
         }
-        MainActivity.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                toggleVisibility(true);
-                number = number + 1;
-                numberWidget.setText("" + number);
-            }
-        });
+        number = number + 1;
+        numberWidget.setText("" + number);
+        toggleVisibility(true);
     }
 
     @Override
