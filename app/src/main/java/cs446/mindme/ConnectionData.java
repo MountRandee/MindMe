@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewHistory;
@@ -102,13 +103,12 @@ public class ConnectionData {
                             (new InputStreamReader(response.getEntity().getContent()));
 
                     String line = "";
-                    StringBuffer error = new StringBuffer();
+                    StringBuffer responseEntity = new StringBuffer();
                     while ((line = rd.readLine()) != null) {
-                        error.append(line);
+                        responseEntity.append(line);
                     }
 
-
-                    JSONObject obj = new JSONObject(error.toString());
+                    JSONObject obj = new JSONObject(responseEntity.toString());
 
                     SampleData.getReceivedList().clear();
                     SampleData.getSentList().clear();
@@ -127,12 +127,12 @@ public class ConnectionData {
                         Date date = format.parse(last_modified_date);
                         ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.RECEIVED, message, from, date, ReminderDataHolder.stringToStatus(status), id);
                         if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
-                            if (!SampleData.getReceivedList().contains(reminder)) {
+                            if (!SampleData.contains(SampleData.getReceivedList(), reminder)) {
                                 SampleData.getReceivedList().add(reminder);
                             }
                         } else {
                             reminder.set_type(ReminderDataHolder.reminderType.HISTORY);
-                            if (!SampleData.getHistoryList().contains(reminder)) {
+                            if (!SampleData.contains(SampleData.getHistoryList(), reminder)) {
                                 SampleData.getHistoryList().add(reminder);
                             }
                         }
@@ -148,12 +148,12 @@ public class ConnectionData {
                         String id = sentMsgs.getJSONObject(i).getString("id");
                         ReminderDataHolder reminder = new ReminderDataHolder(ReminderDataHolder.reminderType.SENT, message, to, date, ReminderDataHolder.stringToStatus(status), id);
                         if (reminder.getStatus() == ReminderDataHolder.reminderStatus.ACTIVE) {
-                            if (!SampleData.getSentList().contains(reminder)) {
+                            if (!SampleData.contains(SampleData.getSentList(), reminder)) {
                                 SampleData.getSentList().add(reminder);
                             }
                         } else {
                             reminder.set_type(ReminderDataHolder.reminderType.HISTORY);
-                            if (!SampleData.getHistoryList().contains(reminder)) {
+                            if (!SampleData.contains(SampleData.getHistoryList(), reminder)) {
                                 SampleData.getHistoryList().add(reminder);
                             }
                         }
@@ -168,9 +168,6 @@ public class ConnectionData {
                             Log.e("loadReminders", "loaded");
                         }
                     });
-                    if (MainActivity.getActivity() != null) {
-                        //saveAllSharedReminders(MainActivity.getActivity());
-                    }
                 } catch (Exception e) {
                     isLoadingReminders = false;
                     showToast(e.getLocalizedMessage(), callType.LOAD_REMINDERS);
@@ -480,38 +477,75 @@ public class ConnectionData {
         ).executeAsync();
     }
 
-    public static void showNotification(String sender, String eventtext, Context context) {
-        // Set the icon, scrolling text and timestamp
+    public static void showNotification(final String reminderID, final Context context) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet(DOMAIN + "/api/v1/reminder/get/" + reminderID + "/");
+                    HttpResponse response = null;
+                        response = client.execute(request);
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.widget,
-                eventtext, System.currentTimeMillis());
+                    // Get the response
+                    BufferedReader rd = new BufferedReader
+                            (new InputStreamReader(response.getEntity().getContent()));
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+                    String line = "";
+                    StringBuffer responseEntity = new StringBuffer();
+                    while ((line = rd.readLine()) != null) {
+                        responseEntity.append(line);
+                    }
 
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    JSONObject obj = new JSONObject(responseEntity.toString());
+                    MainActivity.Friend from = MainActivity.Friend.getFriend(obj.getJSONObject("result").getString("from"));
+                    MainActivity.Friend to = MainActivity.Friend.getFriend(obj.getJSONObject("result").getString("to"));
+                    String message = obj.getJSONObject("result").getString("message");
+                    if (message.length() > 15) {
+                        message = message.substring(0, 15);
+                    }
+                    ReminderDataHolder.reminderStatus status = ReminderDataHolder.stringToStatus(obj.getJSONObject("result").getString("status"));
+                    String date1 = obj.getJSONObject("result").getString("created_date");
+                    String date2 = obj.getJSONObject("result").getString("last_modified_date");
 
-        // The PendingIntent to launch our activity if the user selects this
-        // notification
-        PendingIntent intent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
+                    String notificationTitle;
+                    String notificationMessage = "Reminder: \"" + message + "\"";
+                    if (status == ReminderDataHolder.reminderStatus.COMPLETED) {
+                        notificationTitle = to.name + " has completed your reminder";
+                    } else if (status == ReminderDataHolder.reminderStatus.DECLINED) {
+                        notificationTitle = to.name + " has declined your reminder";
+                    } else if (status == ReminderDataHolder.reminderStatus.CANCELLED) {
+                        notificationTitle = from.name + " has cancelled a reminder";
+                    } else {
+                        if (date1.equals(date2)) {
+                            notificationTitle = from.name + " has sent you a reminder";
+                        } else {
+                            notificationTitle = "A reminder has been edited";
+                        }
+                    }
+                    NotificationManager notificationManager = (NotificationManager) context
+                            .getSystemService(Context.NOTIFICATION_SERVICE);
+                    Notification notification = new Notification(R.drawable.notification_icon,
+                            notificationMessage, System.currentTimeMillis());
+                    Intent notificationIntent = new Intent(context, MainActivity.class);
+                    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    PendingIntent intent = PendingIntent.getActivity(context, 0,
+                            notificationIntent, 0);
+                    notification.setLatestEventInfo(context, notificationTitle, notificationMessage,
+                            intent);
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(MINDME_SHARED_PREF, Integer.parseInt(reminderID), notification);
 
-        // Set the info for the views that show in the notification panel.
-        String title = sender + " sent you a reminder";
-
-        notification.setLatestEventInfo(context, title, eventtext,
-                intent);
-
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        // Send the notification.
-        notificationManager.notify("MindMe", 0, notification);
-
-        if (!isAppOpen(context)) {
-            WidgetService.getWidgetService().incrementNumber();
-        }
+                    if (!isAppOpen(context)) {
+                        WidgetService.getWidgetService().incrementNumber();
+                    }
+                } catch (Exception e) {
+                    showToast(e.getLocalizedMessage(), callType.LOAD_REMINDERS);
+                }
+            }
+        });
+        thread.start();
     }
 
     public static boolean isAppOpen(Context context) {

@@ -13,7 +13,7 @@ public class GcmMessageHandler extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         super.onMessageReceived(from, data);
-        Log.d("GCM", "Handle incoming message");
+        Log.e("GCM", data.toString());
 
         String sender = data.getString("sender");
         String title = data.getString("title");
@@ -24,6 +24,6 @@ public class GcmMessageHandler extends GcmListenerService {
         Log.d("GCM", "Message: " + message);
 
         // populate push notification
-        ConnectionData.showNotification(sender, message, MainActivity.getActivity());
+        //ConnectionData.showNotification(sender, message, MainActivity.getActivity());
     }
 }

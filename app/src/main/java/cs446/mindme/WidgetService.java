@@ -21,7 +21,7 @@ public class WidgetService extends Service {
     private WindowManager windowManager;
     private View chatHead;
     private TextView numberWidget;
-    private int number = 0;
+    private int number = 1;
     private WindowManager.LayoutParams params;
 
     public static WidgetService getWidgetService() { return widgetService; }
@@ -88,21 +88,31 @@ public class WidgetService extends Service {
 
     public void toggleVisibility(final boolean visible) {
         if (MainActivity.getActivity() != null) {
-            if (visible) {
-                startService(new Intent(MainActivity.getActivity(), WidgetService.class));
-            } else {
-                stopService(new Intent(MainActivity.getActivity(), WidgetService.class));
-            }
+            MainActivity.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (visible) {
+                        startService(new Intent(MainActivity.getActivity(), WidgetService.class));
+                    } else {
+                        stopService(new Intent(MainActivity.getActivity(), WidgetService.class));
+                    }
+                }
+            });
         }
     }
 
     public void incrementNumber() {
-        if (chatHead == null) {
+        number = number + 1;
+        if (chatHead == null || MainActivity.getActivity() == null) {
             return;
         }
-        number = number + 1;
-        numberWidget.setText("" + number);
-        toggleVisibility(true);
+        MainActivity.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                numberWidget.setText("" + number);
+                toggleVisibility(true);
+            }
+        });
     }
 
     @Override

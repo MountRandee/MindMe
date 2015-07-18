@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                     }
                 }
             }
-            return new Friend("Unknown", id);
+            return new Friend("", id);
         }
     }
 

@@ -30,7 +30,8 @@
     <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_status"
         android:layout_alignTop="@+id/reminder_text"
-        android:layout_alignEnd="@+id/reminder_timestamp" />
+        android:layout_alignEnd="@+id/reminder_timestamp"
+        android:background="#DADADA"/>
 
     <TextView style="@style/ReminderItemText.Small"
         android:id="@+id/reminder_timestamp"
