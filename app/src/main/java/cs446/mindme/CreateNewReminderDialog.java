@@ -121,7 +121,6 @@ public class CreateNewReminderDialog extends Dialog implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                message = s.toString().replace("&","");
                 updateButton();
             }
 

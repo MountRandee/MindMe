@@ -144,7 +144,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             if (changedMessage.isEmpty()) {
                                 Toast.makeText(_context, "Reminder message empty !", Toast.LENGTH_SHORT).show();
                             } else {
-                                getGroup(groupPosition).set_message(changedMessage.replace("&",""));
+                                getGroup(groupPosition).set_message(changedMessage);
                                 notifyDataSetChanged();
                                 HashMap<String, String> params = new HashMap<String, String>();
                                 params.put("message_id", getGroup(groupPosition).getID());

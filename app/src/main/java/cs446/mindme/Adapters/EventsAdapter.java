@@ -2,6 +2,7 @@ package cs446.mindme.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import cs446.mindme.DataHolders.EventDataHolder;
 import cs446.mindme.DataHolders.EventDetailsDataHolder;
 import cs446.mindme.DataRequest.EventRequest;
 import cs446.mindme.R;
+import cs446.mindme.Views.ViewEvent;
 
 public class EventsAdapter extends BaseExpandableListAdapter {
     private Context _context;
@@ -122,6 +124,19 @@ public class EventsAdapter extends BaseExpandableListAdapter {
                 // Set the message and title
                 dialogBuilder.setMessage(dialogMessage.toString());
                 dialogBuilder.setTitle(getGroup(groupPosition).get_title());
+                dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                dialogBuilder.setPositiveButton("Create Reminder", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        createReminder(groupPosition);
+                    }
+                });
                 dialogBuilder.show();
             }
         });
@@ -131,58 +146,62 @@ public class EventsAdapter extends BaseExpandableListAdapter {
         buttonCreateReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventDetailsDataHolder eventDetails = new EventDetailsDataHolder();
-                // Get the event information from a JSON response
-                String jsonAddress = EventRequest.buildAddress(getGroup(groupPosition).get_site(), getGroup(groupPosition).get_id());
-                EventRequest eventConnection = new EventRequest();
-                try {
-                    String responseString = eventConnection.execute(jsonAddress).get();
-                    eventDetails = eventConnection.buildEventInfo(responseString);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                // Create the date and time string
-                StringBuilder dateTimeSB = new StringBuilder();
-                boolean equalSize = (eventDetails.get_startDate().size() == eventDetails.get_startTime().size());
-                if (equalSize) {
-                    for (int i = 0; i < eventDetails.get_startDate().size(); i++) {
-                        dateTimeSB.append(eventDetails.get_startDate().get(i))
-                                .append(" @ ")
-                                .append(eventDetails.get_startTime().get(i))
-                                .append("\n");
-                    }
-                }
-                // Create the location string
-                StringBuilder locationSB = new StringBuilder();
-                locationSB.append(eventDetails.get_locationName())
-                        .append("\n")
-                        .append(eventDetails.get_locationStreet())
-                        .append("\n")
-                        .append(eventDetails.get_locationCity())
-                        .append("\n")
-                        .append(eventDetails.get_locationProvince())
-                        .append("\n")
-                        .append(eventDetails.get_locationPostal())
-                        .append("\n");
-                // Build the dialog message
-                StringBuilder dialogMessage = new StringBuilder();
-                dialogMessage.append(getGroup(groupPosition).get_title() + "\n\n")
-                        .append("Dates and Times:\n")
-                        .append(dateTimeSB.toString() + "\n")
-                        .append("Location:\n")
-                        .append(locationSB.toString() + "\n")
-                        .append("Link:\n")
-                        .append(eventDetails.get_link());
-                // Build the dialog
-                CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, dialogMessage.toString().replace("&",""));
-                dialog.show();
+                createReminder(groupPosition);
             }
         });
 
 
         return convertView;
+    }
+
+    public void createReminder(final int groupPosition) {
+        EventDetailsDataHolder eventDetails = new EventDetailsDataHolder();
+        // Get the event information from a JSON response
+        String jsonAddress = EventRequest.buildAddress(getGroup(groupPosition).get_site(), getGroup(groupPosition).get_id());
+        EventRequest eventConnection = new EventRequest();
+        try {
+            String responseString = eventConnection.execute(jsonAddress).get();
+            eventDetails = eventConnection.buildEventInfo(responseString);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        // Create the date and time string
+        StringBuilder dateTimeSB = new StringBuilder();
+        boolean equalSize = (eventDetails.get_startDate().size() == eventDetails.get_startTime().size());
+        if (equalSize) {
+            for (int i = 0; i < eventDetails.get_startDate().size(); i++) {
+                dateTimeSB.append(eventDetails.get_startDate().get(i))
+                        .append(" @ ")
+                        .append(eventDetails.get_startTime().get(i))
+                        .append("\n");
+            }
+        }
+        // Create the location string
+        StringBuilder locationSB = new StringBuilder();
+        locationSB.append(eventDetails.get_locationName())
+                .append("\n")
+                .append(eventDetails.get_locationStreet())
+                .append("\n")
+                .append(eventDetails.get_locationCity())
+                .append("\n")
+                .append(eventDetails.get_locationProvince())
+                .append("\n")
+                .append(eventDetails.get_locationPostal())
+                .append("\n");
+        // Build the dialog message
+        StringBuilder dialogMessage = new StringBuilder();
+        dialogMessage.append(getGroup(groupPosition).get_title() + "\n\n")
+                .append("Dates and Times:\n")
+                .append(dateTimeSB.toString() + "\n")
+                .append("Location:\n")
+                .append(locationSB.toString() + "\n")
+                .append("Link:\n")
+                .append(eventDetails.get_link());
+        // Build the dialog
+        CreateNewReminderDialog dialog = new CreateNewReminderDialog(_context, dialogMessage.toString());
+        dialog.show();
     }
 
     @Override
