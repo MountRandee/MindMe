@@ -85,6 +85,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
         timer.schedule(timerTask, 10000, 10000);
 
         startService(new Intent(this, WidgetService.class));
+        stopService(new Intent(this, WidgetService.class));
 
         mNavigationDrawerFragment = (ViewSidePanelMenu)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
