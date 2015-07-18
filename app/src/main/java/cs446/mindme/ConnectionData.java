@@ -89,9 +89,10 @@ public class ConnectionData {
                 if (isLoadingReminders) {
                     return;
                 }
-                isLoadingReminders = true;
-                Log.e("loadReminders", "loading");
                 try {
+                    isLoadingReminders = true;
+                    Log.e("loadReminders", "loading");
+
                     HttpClient client = new DefaultHttpClient();
                     HttpGet request = new HttpGet(DOMAIN + "/api/v1/user/get/" + Profile.getCurrentProfile().getId() + "/?deref=all");
                     HttpResponse response = client.execute(request);
@@ -105,6 +106,7 @@ public class ConnectionData {
                     while ((line = rd.readLine()) != null) {
                         error.append(line);
                     }
+
 
                     JSONObject obj = new JSONObject(error.toString());
 
@@ -157,28 +159,48 @@ public class ConnectionData {
                         }
                     }
                     SampleData.sortLists();
-                    if (ViewReceived.getViewReceived() != null) {
-                        ViewReceived.getViewReceived().notifyDataSetChanged();
-                    }
-                    if (ViewSent.getViewSent() != null) {
-                        ViewSent.getViewSent().notifyDataSetChanged();
-                    }
-                    if (ViewHistory.getViewHistory() != null) {
-                        ViewHistory.getViewHistory().notifyDataSetChanged();
-                    }
+                    notifyDataSetChanged();
                     isLoadingReminders = false;
-                    Log.e("loadReminders", "loaded");
+                    MainActivity.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.getActivity(), "Finished reloading", Toast.LENGTH_LONG).show();
+                            Log.e("loadReminders", "loaded");
+                        }
+                    });
                     if (MainActivity.getActivity() != null) {
                         //saveAllSharedReminders(MainActivity.getActivity());
                     }
                 } catch (Exception e) {
                     isLoadingReminders = false;
                     showToast(e.getLocalizedMessage(), callType.LOAD_REMINDERS);
-                    Log.e("loadReminders", "Exception: " + e);
                 }
             }
         });
         thread.start();
+    }
+
+    public static void notifyDataSetChanged() {
+        if (MainActivity.getActivity() == null) {
+            return;
+        }
+        MainActivity.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (ViewReceived.getViewReceived() != null) {// && ViewReceived.getViewReceived().getUserVisibleHint()) {
+                    Log.e("Visible Fragment", "Received");
+                    ViewReceived.getViewReceived().notifyDataSetChanged();
+                }
+                if (ViewSent.getViewSent() != null) {// && ViewSent.getViewSent().getUserVisibleHint()) {
+                    Log.e("Visible Fragment", "Sent");
+                    ViewSent.getViewSent().notifyDataSetChanged();
+                }
+                if (ViewHistory.getViewHistory() != null) {// && ViewHistory.getViewHistory().getUserVisibleHint()) {
+                    Log.e("Visible Fragment", "History");
+                    ViewHistory.getViewHistory().notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     public static void post(final String appendURL, final HashMap<String, String>params, final boolean shouldReloadReminders, final callType callType) {
@@ -210,7 +232,6 @@ public class ConnectionData {
                     }
                 } catch (Exception e) {
                     showToast(e.getLocalizedMessage(), callType);
-                    Log.e("post", "Exception: " + e);
                 }
             }
         });
@@ -251,7 +272,6 @@ public class ConnectionData {
                     editor.apply();
                 } catch (Exception e) {
                     showToast(e.getLocalizedMessage(), callType.GCM);
-                    Log.e("startGCM", "Exception: " + e);
                 }
             }
         });
@@ -294,6 +314,7 @@ public class ConnectionData {
                             break;
                     }
                     Toast.makeText(MainActivity.getActivity(), title + "\n" + message, Toast.LENGTH_LONG).show();
+                    Log.e(title, message);
                 }
             });
         }
@@ -434,7 +455,7 @@ public class ConnectionData {
                             } else if (!MainActivity.friends.isEmpty()) {
                                 MainActivity.friends.clear();
                             }
-
+                            MainActivity.friends.add(new MainActivity.Friend(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getId()));
                             if (array != null) {
                                 for (int i = 0; i < array.length(); i++) {
                                     MainActivity.friends.add(new MainActivity.Friend(array.getJSONObject(i).getString("name"),
@@ -445,23 +466,14 @@ public class ConnectionData {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (ViewReceived.getViewReceived() != null) {
-                                        ViewReceived.getViewReceived().notifyDataSetChanged();
-                                    }
-                                    if (ViewSent.getViewSent() != null) {
-                                        ViewSent.getViewSent().notifyDataSetChanged();
-                                    }
-                                    if (ViewHistory.getViewHistory() != null) {
-                                        ViewHistory.getViewHistory().notifyDataSetChanged();
-                                    }
+                                    notifyDataSetChanged();
                                 }
-                            }, 1000);
+                            }, 0000);
                             if (CreateNewReminderDialog.dialog != null && CreateNewReminderDialog.dialog.isShowing()) {
                                 CreateNewReminderDialog.dialog.completeRefreshList();
                             }
                         } catch (Exception e) {
                             showToast(e.getLocalizedMessage(), callType.RETRIEVE_FRIENDS);
-                            Log.e("setupProfile", "Exception: " + e);
                         }
                     }
                 }

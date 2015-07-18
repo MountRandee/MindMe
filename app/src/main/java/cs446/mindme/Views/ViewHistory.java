@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import java.util.ArrayList;
 import cs446.mindme.Adapters.ReminderListAdapter;
+import cs446.mindme.ConnectionData;
 import cs446.mindme.R;
 import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.SampleData;
@@ -53,7 +54,7 @@ public class ViewHistory extends Fragment {
         try {
             listAdapter.notifyDataSetChanged();
         } catch (Exception e) {
-
+            ConnectionData.showToast(e.getLocalizedMessage(), ConnectionData.callType.LOAD_REMINDERS);
         }
     }
 }
