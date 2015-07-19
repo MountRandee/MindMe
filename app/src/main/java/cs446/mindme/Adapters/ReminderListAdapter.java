@@ -105,111 +105,130 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, final ViewGroup parent) {
+        try {
+            // The reminder type determines the child view
+            ReminderDataHolder.reminderType rType = getGroup(groupPosition).getType();
 
-        // The reminder type determines the child view
-        ReminderDataHolder.reminderType rType = getGroup(groupPosition).getType();
-
-        if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (ReminderDataHolder.reminderType.RECEIVED == rType) {
-                convertView = layoutInflater.inflate(R.layout.reminder_actions_for_received, null);
-            } else if (ReminderDataHolder.reminderType.SENT == rType) {
-                convertView = layoutInflater.inflate(R.layout.reminder_actions_for_sent, null);
-            } else {
-                convertView = layoutInflater.inflate(R.layout.empty_layout, null);
-            }
-        }
-
-        // When the Complete/Decline/Cancel button is clicked, it should remove the reminder.
-        // When the Edit button is clicked, user should be able to edit the reminder.
-        if (ReminderDataHolder.reminderType.HISTORY != rType) {
-
-            // Received and Sent reminders have an Edit button
-            Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
-            buttonEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Must always create a new dialog
-                    final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
-                    editableDialog.setTitle("Edit");
-                    final EditText editText = new EditText(_context);
-                    editText.setText(getGroup(groupPosition).getMessage());
-                    editableDialog.setView(editText);
-                    editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        // Check if the new reminder message is empty
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String changedMessage = editText.getText().toString();
-                            if (changedMessage.isEmpty()) {
-                                Toast.makeText(_context, "Reminder message empty !", Toast.LENGTH_SHORT).show();
-                            } else {
-                                getGroup(groupPosition).set_message(changedMessage);
-                                notifyDataSetChanged();
-                                HashMap<String, String> params = new HashMap<String, String>();
-                                params.put("message_id", getGroup(groupPosition).getID());
-                                params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.ACTIVE));
-                                params.put("message", changedMessage);
-                                ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.EDIT_REMINDER);
-                            }
-                        }
-                    });
-                    editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            // Do nothing
-                        }
-                    });
-                    editableDialog.show();
+            if (convertView == null) {
+                LayoutInflater layoutInflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if (ReminderDataHolder.reminderType.RECEIVED == rType) {
+                    convertView = layoutInflater.inflate(R.layout.reminder_actions_for_received, null);
+                } else if (ReminderDataHolder.reminderType.SENT == rType) {
+                    convertView = layoutInflater.inflate(R.layout.reminder_actions_for_sent, null);
+                } else {
+                    convertView = layoutInflater.inflate(R.layout.empty_layout, null);
                 }
-            });
-
-            if (ReminderDataHolder.reminderType.RECEIVED == rType) {
-                Button buttonComplete = (Button) convertView.findViewById(R.id.button_complete);
-                Button buttonDecline = (Button) convertView.findViewById(R.id.button_decline);
-                // Received reminders also have Complete and Decline buttons
-                buttonComplete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
-                        params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.COMPLETE_REMINDER);
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
-                    }
-                });
-                buttonDecline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
-                        params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.DECLINE_REMINDER);
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
-                    }
-                });
-
-            } else {
-                // Sent reminders also have Cancel buttons
-                Button buttonCancel = (Button) convertView.findViewById(R.id.button_cancel);
-                buttonCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick (View v) {
-
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("message_id", getGroup(groupPosition).getID());
-                        params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
-                        params.put("message", getGroup(groupPosition).getMessage());
-                        ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.CANCEL_REMINDER);
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
-                    }
-                });
             }
+
+            // When the Complete/Decline/Cancel button is clicked, it should remove the reminder.
+            // When the Edit button is clicked, user should be able to edit the reminder.
+            if (ReminderDataHolder.reminderType.HISTORY != rType) {
+
+                // Received and Sent reminders have an Edit button
+                Button buttonEdit = (Button) convertView.findViewById(R.id.button_edit);
+                buttonEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(_context);
+                        dialogBuilder.setMessage(getGroup(groupPosition).getMessage().toString());
+                        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialogBuilder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                // Must always create a new dialog
+                                final AlertDialog.Builder editableDialog = new AlertDialog.Builder(_context);
+                                editableDialog.setTitle("Edit");
+                                final EditText editText = new EditText(_context);
+                                editText.setText(getGroup(groupPosition).getMessage());
+                                editableDialog.setView(editText);
+                                editableDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    // Check if the new reminder message is empty
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String changedMessage = editText.getText().toString();
+                                        if (changedMessage.isEmpty()) {
+                                            Toast.makeText(_context, "Reminder message empty !", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            getGroup(groupPosition).set_message(changedMessage);
+                                            notifyDataSetChanged();
+                                            HashMap<String, String> params = new HashMap<String, String>();
+                                            params.put("message_id", getGroup(groupPosition).getID());
+                                            params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.ACTIVE));
+                                            params.put("message", changedMessage);
+                                            ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.EDIT_REMINDER);
+                                        }
+                                    }
+                                });
+                                editableDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                        // Do nothing
+                                    }
+                                });
+                                editableDialog.show();
+                            }
+                        });
+                        dialogBuilder.show();
+
+                    }
+                });
+
+                if (ReminderDataHolder.reminderType.RECEIVED == rType) {
+                    Button buttonComplete = (Button) convertView.findViewById(R.id.button_complete);
+                    Button buttonDecline = (Button) convertView.findViewById(R.id.button_decline);
+                    // Received reminders also have Complete and Decline buttons
+                    buttonComplete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("message_id", getGroup(groupPosition).getID());
+                            params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
+                            params.put("message", getGroup(groupPosition).getMessage());
+                            ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.COMPLETE_REMINDER);
+                            removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
+                        }
+                    });
+                    buttonDecline.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("message_id", getGroup(groupPosition).getID());
+                            params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
+                            params.put("message", getGroup(groupPosition).getMessage());
+                            ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.DECLINE_REMINDER);
+                            removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
+                        }
+                    });
+
+                } else {
+                    // Sent reminders also have Cancel buttons
+                    Button buttonCancel = (Button) convertView.findViewById(R.id.button_cancel);
+                    buttonCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("message_id", getGroup(groupPosition).getID());
+                            params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
+                            params.put("message", getGroup(groupPosition).getMessage());
+                            ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.CANCEL_REMINDER);
+                            removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+
         }
 
         return convertView;

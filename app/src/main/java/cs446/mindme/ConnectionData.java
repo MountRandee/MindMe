@@ -164,7 +164,7 @@ public class ConnectionData {
                     MainActivity.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.getActivity(), "Finished reloading", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.getActivity(), "Finished reloading", Toast.LENGTH_LONG).show();
                             Log.e("loadReminders", "loaded");
                         }
                     });
