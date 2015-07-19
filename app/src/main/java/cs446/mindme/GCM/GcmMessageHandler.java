@@ -16,8 +16,9 @@ public class GcmMessageHandler extends GcmListenerService {
         Log.e("GCM", data.toString());
 
         try {
-            String reminderID = data.getBundle("results").getString("id");
+            String reminderID = data.getString("id");
             ConnectionData.showNotification(reminderID, MainActivity.getActivity());
+            ConnectionData.loadReminders();
         } catch (Exception e) {
             ConnectionData.showToast(e.getLocalizedMessage(), ConnectionData.callType.GCM);
         }

@@ -315,7 +315,7 @@ public class ConnectionData {
                             break;
                     }
                     //Toast.makeText(MainActivity.getActivity(), title + "\n" + message, Toast.LENGTH_LONG).show();
-                    Log.e(title, message);
+                    //Log.e(title, message);
                 }
             });
         }

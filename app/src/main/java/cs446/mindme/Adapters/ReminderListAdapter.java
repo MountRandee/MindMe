@@ -16,6 +16,8 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
+
+import com.facebook.AccessToken;
 import com.facebook.login.widget.ProfilePictureView;
 
 import cs446.mindme.ConnectionData;
@@ -162,6 +164,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                                             params.put("message_id", getGroup(groupPosition).getID());
                                             params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.ACTIVE));
                                             params.put("message", changedMessage);
+                                            params.put("cur_user_id", AccessToken.getCurrentAccessToken().getUserId());
                                             ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.EDIT_REMINDER);
                                         }
                                     }
@@ -193,6 +196,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             params.put("message_id", getGroup(groupPosition).getID());
                             params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
                             params.put("message", getGroup(groupPosition).getMessage());
+                            params.put("cur_user_id", AccessToken.getCurrentAccessToken().getUserId());
                             ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.COMPLETE_REMINDER);
                             removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
                         }
@@ -205,6 +209,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             params.put("message_id", getGroup(groupPosition).getID());
                             params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
                             params.put("message", getGroup(groupPosition).getMessage());
+                            params.put("cur_user_id", AccessToken.getCurrentAccessToken().getUserId());
                             ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.DECLINE_REMINDER);
                             removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
                         }
@@ -221,6 +226,7 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                             params.put("message_id", getGroup(groupPosition).getID());
                             params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
                             params.put("message", getGroup(groupPosition).getMessage());
+                            params.put("cur_user_id", AccessToken.getCurrentAccessToken().getUserId());
                             ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.CANCEL_REMINDER);
                             removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
                         }
