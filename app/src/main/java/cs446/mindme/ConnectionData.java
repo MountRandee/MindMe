@@ -428,6 +428,7 @@ public class ConnectionData {
         if (MainActivity.getActivity() == null) {
             return;
         }
+        loadReminders();
     }
 
     public static void setupProfile(Context context){
@@ -509,18 +510,23 @@ public class ConnectionData {
                     String date2 = obj.getJSONObject("result").getString("last_modified_date");
 
                     String notificationTitle;
-                    String notificationMessage = "Reminder: \"" + message + "\"";
+                    String notificationMessage;
                     if (status == ReminderDataHolder.reminderStatus.COMPLETED) {
                         notificationTitle = to.name + " has completed your reminder";
+                        notificationMessage = "Reminder completed: \"" + message + "\"";
                     } else if (status == ReminderDataHolder.reminderStatus.DECLINED) {
                         notificationTitle = to.name + " has declined your reminder";
+                        notificationMessage = "Reminder declined: \"" + message + "\"";
                     } else if (status == ReminderDataHolder.reminderStatus.CANCELLED) {
                         notificationTitle = from.name + " has cancelled a reminder";
+                        notificationMessage = "Reminder cancelled: \"" + message + "\"";
                     } else {
                         if (date1.equals(date2)) {
                             notificationTitle = from.name + " has sent you a reminder";
+                            notificationMessage = "New reminder: \"" + message + "\"";
                         } else {
                             notificationTitle = "A reminder has been edited";
+                            notificationMessage = "Edited reminder: \"" + message + "\"";
                         }
                     }
                     NotificationManager notificationManager = (NotificationManager) context

@@ -15,15 +15,11 @@ public class GcmMessageHandler extends GcmListenerService {
         super.onMessageReceived(from, data);
         Log.e("GCM", data.toString());
 
-        String sender = data.getString("sender");
-        String title = data.getString("title");
-        String message = data.getString("message");
-
-        Log.d("GCM", "From: " + sender);
-        Log.d("GCM", "Title: " + title);
-        Log.d("GCM", "Message: " + message);
-
-        // populate push notification
-        //ConnectionData.showNotification(sender, message, MainActivity.getActivity());
+        try {
+            String reminderID = data.getBundle("results").getString("id");
+            ConnectionData.showNotification(reminderID, MainActivity.getActivity());
+        } catch (Exception e) {
+            ConnectionData.showToast(e.getLocalizedMessage(), ConnectionData.callType.GCM);
+        }
     }
 }
