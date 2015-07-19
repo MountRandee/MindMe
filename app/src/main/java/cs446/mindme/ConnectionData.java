@@ -70,7 +70,7 @@ public class ConnectionData {
 
     //gcm
     public static GoogleCloudMessaging gcm;
-    public static String PROJECT_NUMBER = "936075907537";
+    public static String PROJECT_NUMBER = "76941373391";
     public static String regid;
 
     public static String SHARED_GCM_ID = "sharedGCMID";
@@ -184,17 +184,21 @@ public class ConnectionData {
         MainActivity.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (ViewReceived.getViewReceived() != null) {// && ViewReceived.getViewReceived().getUserVisibleHint()) {
-                    Log.e("Visible Fragment", "Received");
-                    ViewReceived.getViewReceived().notifyDataSetChanged();
-                }
-                if (ViewSent.getViewSent() != null) {// && ViewSent.getViewSent().getUserVisibleHint()) {
-                    Log.e("Visible Fragment", "Sent");
-                    ViewSent.getViewSent().notifyDataSetChanged();
-                }
-                if (ViewHistory.getViewHistory() != null) {// && ViewHistory.getViewHistory().getUserVisibleHint()) {
-                    Log.e("Visible Fragment", "History");
-                    ViewHistory.getViewHistory().notifyDataSetChanged();
+                try {
+                    if (ViewReceived.getViewReceived() != null) {// && ViewReceived.getViewReceived().getUserVisibleHint()) {
+                        Log.e("Visible Fragment", "Received");
+                        ViewReceived.getViewReceived().notifyDataSetChanged();
+                    }
+                    if (ViewSent.getViewSent() != null) {// && ViewSent.getViewSent().getUserVisibleHint()) {
+                        Log.e("Visible Fragment", "Sent");
+                        ViewSent.getViewSent().notifyDataSetChanged();
+                    }
+                    if (ViewHistory.getViewHistory() != null) {// && ViewHistory.getViewHistory().getUserVisibleHint()) {
+                        Log.e("Visible Fragment", "History");
+                        ViewHistory.getViewHistory().notifyDataSetChanged();
+                    }
+                } catch (Exception e) {
+                    showToast(e.getLocalizedMessage(), callType.LOAD_REMINDERS);
                 }
             }
         });
@@ -310,7 +314,7 @@ public class ConnectionData {
                             title = "Error";
                             break;
                     }
-                    Toast.makeText(MainActivity.getActivity(), title + "\n" + message, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MainActivity.getActivity(), title + "\n" + message, Toast.LENGTH_LONG).show();
                     Log.e(title, message);
                 }
             });
@@ -428,7 +432,7 @@ public class ConnectionData {
         if (MainActivity.getActivity() == null) {
             return;
         }
-        loadReminders();
+        //loadReminders();
     }
 
     public static void setupProfile(Context context){
