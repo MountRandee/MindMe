@@ -24,7 +24,6 @@ import cs446.mindme.DataHolders.ReminderDataHolder;
 import cs446.mindme.Views.ViewEmpty;
 import cs446.mindme.Views.ViewEvent;
 import cs446.mindme.Views.ViewSidePanelMenu;
-import cs446.mindme.Views.ViewMisc;
 
 public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.NavigationDrawerCallbacks {
 
@@ -157,29 +156,19 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                     viewPager.setVisibility(View.VISIBLE);
                     fragment = new ViewEmpty();
                     fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-                    // viewPager.getRootView().setVisibility(View.VISIBLE);
                 }
-
                 break;
             case 1:
-
-                    fragment = new ViewEvent();
+                fragment = new ViewEvent();
                 if (viewPager != null) {
                     viewPager.setVisibility(View.INVISIBLE);
                 }
-                if (actionBar != null) {
-                    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                    actionBar.setDisplayShowTitleEnabled(true);
-                    actionBar.setTitle(mTitle);
-                }
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, fragment)
-                            .commit();
-
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .commit();
                 break;
             case 2:
-
-                fragment = new ViewMisc();
+               /* fragment = new ViewMisc();
                 if (viewPager != null) {
                     viewPager.setVisibility(View.INVISIBLE);
                 }
@@ -190,7 +179,7 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
                 }
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, fragment)
-                            .commit();
+                            .commit();*/
                 break;
         }
     }
@@ -203,9 +192,9 @@ public class MainActivity extends FragmentActivity implements ViewSidePanelMenu.
             case 2:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+           /* case 3:
                 mTitle = getString(R.string.title_section3);
-                break;
+                break;*/
         }
     }
 

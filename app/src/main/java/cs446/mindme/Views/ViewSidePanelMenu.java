@@ -93,9 +93,7 @@ public class ViewSidePanelMenu extends Fragment {
                 android.R.id.text1,
                 new String[]{
                         getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3)
-
+                        getString(R.string.title_section2)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
