@@ -172,23 +172,25 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                 buttonComplete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
+
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.COMPLETED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.COMPLETE_REMINDER);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.COMPLETED, parent);
                     }
                 });
                 buttonDecline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
+
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.DECLINED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.DECLINE_REMINDER);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.DECLINED, parent);
                     }
                 });
 
@@ -198,12 +200,13 @@ public class ReminderListAdapter extends BaseExpandableListAdapter {
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick (View v) {
-                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
+
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("message_id", getGroup(groupPosition).getID());
                         params.put("new_status", ReminderDataHolder.statusToString(ReminderDataHolder.reminderStatus.CANCELLED));
                         params.put("message", getGroup(groupPosition).getMessage());
                         ConnectionData.post("/api/v1/reminder/update/", params, false, ConnectionData.callType.CANCEL_REMINDER);
+                        removeGroup(groupPosition, ReminderDataHolder.reminderStatus.CANCELLED, parent);
                     }
                 });
             }

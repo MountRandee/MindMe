@@ -59,7 +59,7 @@ import cs446.mindme.Views.ViewSent;
 public class ConnectionData {
     private static ConnectionData ourInstance = new ConnectionData();
 
-    public static String DOMAIN = "http://10.0.2.2:5000";
+    public static String DOMAIN = "http://52.25.112.68";
 
     public static String MINDME_SHARED_PREF = "mindmesharedpref";
 
