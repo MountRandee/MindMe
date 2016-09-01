@@ -20,7 +20,6 @@ import cs446.mindme.DataHolders.EventDetailsDataHolder;
 public class EventRequest extends AsyncTask<String, Void, String> {
 
     // Refer to https://github.com/uWaterloo/api-documentation
-    private final static String apiKey = "?key=435c0cf289fbfebc934d29e8c924b323";
     private final static String apiLink = "https://api.uwaterloo.ca/v2/";
     private final static String strEvent = "events";
     private final static String strJSON = ".json";
